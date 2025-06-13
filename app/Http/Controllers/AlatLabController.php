@@ -11,7 +11,7 @@ class AlatLabController extends Controller
 {
     public function index()
     {
-        $alats = AlatLab::with('category')->get();
+        $alats = AlatLab::with('category')->paginate(10);
         return view('alat.index', compact('alats'));
     }
 
