@@ -49,8 +49,6 @@ class DashboardController extends Controller
             'categories' => $categories,
             'stockOutCount' => $stockOutCount,
             'stockOutMonth' => $stockOutMonth,
-            'categoryNames' => $categoryNames,
-            'alatPerKategori' => $alatPerKategori,
             'bahanCategoryNames' => $bahanCategoryNames,
             'bahanCategoryCounts' => $bahanCategoryCounts,
             'alatCategoryNames' => $alatCategoryNames,
