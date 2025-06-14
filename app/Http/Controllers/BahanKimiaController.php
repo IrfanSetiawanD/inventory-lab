@@ -13,7 +13,7 @@ class BahanKimiaController extends Controller
     public function index()
     {
         // Pastikan variabel yang dikirim ke view adalah 'bahans' untuk konsistensi
-        $bahans = BahanKimia::with('category')->latest()->get();
+        $bahans = BahanKimia::with('category')->latest()->paginate(10);
         return view('bahan.index', compact('bahans'));
     }
 

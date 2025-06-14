@@ -69,6 +69,9 @@
                     @endforelse
                 </tbody>
             </table>
+            <div class="mt-3">
+                {{ $bahans->links() }}
+            </div>
         </div> {{-- Penutup div table-responsive --}}
     </div>
 @endsection
