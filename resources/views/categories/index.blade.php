@@ -1,8 +1,13 @@
 @extends('layouts.app')
 
+@section('page_header')
+    <div class="page-header-container">
+        <h3 class="page-title">Daftar Kategori</h3>
+    </div>
+@endsection
+
 @section('content')
     <div class="container mt-4"> {{-- Mengganti max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 --}}
-        <h4 class="mb-4">Daftar Kategori</h4> {{-- Menggunakan h4 untuk konsistensi dengan AlatLab --}}
 
         <a href="{{ route('categories.create') }}" class="btn btn-primary mb-3"> {{-- Menggunakan btn btn-primary --}}
             <i class="bi bi-plus-circle me-1"></i> Tambah Kategori

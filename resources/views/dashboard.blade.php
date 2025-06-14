@@ -6,71 +6,217 @@
     </div>
 
     <div class="row mt-4 g-4"> {{-- g-4 untuk gap antar kolom --}}
+
+        {{-- 1. Total Kategori --}}
         <div class="col-md-6 col-lg-4 col-xl-3">
             <div class="card dashboard-card">
                 <div class="card-body d-flex align-items-center">
-                    <div class="icon-wrapper bg-primary-dark">
-                        <i class="bi bi-box-seam"></i> {{-- Icon untuk Alat Lab --}}
+                    <div class="icon-wrapper bg-custom-kategori"> {{-- Warna kustom untuk Kategori --}}
+                        <i class="bi bi-tags"></i>
                     </div>
                     <div class="text-content ms-3">
-                        <h5 class="card-title">Total Alat Lab</h5>
+                        <h5 class="card-title">Jumlah Kategori</h5>
+                        <h2 class="card-value">{{ $categoriesCount }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- 2. Jenis Alat Lab --}}
+        <div class="col-md-6 col-lg-4 col-xl-3">
+            <div class="card dashboard-card">
+                <div class="card-body d-flex align-items-center">
+                    <div class="icon-wrapper bg-custom-alat"> {{-- Warna kustom untuk Alat Lab --}}
+                        <i class="bi bi-beaker-fill"></i>
+                    </div>
+                    <div class="text-content ms-3">
+                        <h5 class="card-title">Jenis Alat Lab</h5>
                         <h2 class="card-value">{{ $alatLabCount }}</h2>
                     </div>
                 </div>
             </div>
         </div>
+
+        {{-- 3. Jenis Bahan Kimia --}}
         <div class="col-md-6 col-lg-4 col-xl-3">
             <div class="card dashboard-card">
                 <div class="card-body d-flex align-items-center">
-                    <div class="icon-wrapper bg-info-dark">
-                        <i class="bi bi-flask"></i> {{-- Icon untuk Bahan Kimia --}}
+                    <div class="icon-wrapper bg-custom-bahan"> {{-- Warna kustom untuk Bahan Kimia --}}
+                        <i class="bi bi-droplet-fill"></i>
                     </div>
                     <div class="text-content ms-3">
-                        <h5 class="card-title">Total Bahan Kimia</h5>
+                        <h5 class="card-title">Jenis Bahan Kimia</h5>
                         <h2 class="card-value">{{ $bahanKimiaCount }}</h2>
                     </div>
                 </div>
             </div>
         </div>
+
+        {{-- 4. Total Stok Tersedia (Alat Lab + Bahan Kimia) --}}
         <div class="col-md-6 col-lg-4 col-xl-3">
             <div class="card dashboard-card">
                 <div class="card-body d-flex align-items-center">
-                    <div class="icon-wrapper bg-success-dark">
-                        <i class="bi bi-tags"></i> {{-- Icon untuk Kategori --}}
+                    <div class="icon-wrapper bg-custom-total-stock"> {{-- Warna kustom untuk Total Stock --}}
+                        <i class="bi bi-boxes"></i> {{-- Icon kotak-kotak untuk total stok --}}
                     </div>
                     <div class="text-content ms-3">
-                        <h5 class="card-title">Total Kategori</h5>
-                        <h2 class="card-value">{{ $categories }}</h2>
+                        <h5 class="card-title">Total Stok Tersedia</h5>
+                        <h2 class="card-value">{{ $totalStock }}</h2>
                     </div>
                 </div>
             </div>
         </div>
+
+        {{-- 5. Total Stok Masuk (Bulan Ini) --}}
         <div class="col-md-6 col-lg-4 col-xl-3">
             <div class="card dashboard-card">
                 <div class="card-body d-flex align-items-center">
-                    <div class="icon-wrapper bg-danger-dark">
-                        <i class="bi bi-arrow-down-right-circle"></i> {{-- Icon untuk Stock Keluar --}}
+                    <div class="icon-wrapper bg-custom-stock-in-month"> {{-- Warna kustom untuk Stok Masuk Bulan Ini --}}
+                        <i class="bi bi-arrow-up-right-circle"></i> {{-- Icon panah masuk --}}
                     </div>
                     <div class="text-content ms-3">
-                        <h5 class="card-title">Total Stok Keluar</h5>
-                        <h2 class="card-value">{{ $stockOutCount }}</h2>
+                        <h5 class="card-title">Stok Masuk ({{ now()->format('F') }})</h5>
+                        <h2 class="card-value">{{ $totalStockInMonth }}</h2>
                     </div>
                 </div>
             </div>
         </div>
+
+        {{-- 6. Total Stok Keluar (Bulan Ini) --}}
         <div class="col-md-6 col-lg-4 col-xl-3">
             <div class="card dashboard-card">
                 <div class="card-body d-flex align-items-center">
-                    <div class="icon-wrapper bg-warning-dark">
-                        <i class="bi bi-calendar-check"></i> {{-- Icon untuk Stock Keluar Bulan Ini --}}
+                    <div class="icon-wrapper bg-custom-stock-out-month"> {{-- Warna kustom untuk Stok Keluar Bulan Ini --}}
+                        <i class="bi bi-arrow-down-left-circle"></i> {{-- Icon panah keluar --}}
                     </div>
                     <div class="text-content ms-3">
                         <h5 class="card-title">Stok Keluar ({{ now()->format('F') }})</h5>
-                        <h2 class="card-value">{{ $stockOutMonth }}</h2>
+                        <h2 class="card-value">{{ $totalStockOutMonth }}</h2>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Statistik Alat Lab per Kategori</h5>
+                        <canvas id="alatChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>  
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Statistik Bahan Kimia per Kategori</h5>
+                        <canvas id="bahanChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        
+        <script>
+            const ctx = document.getElementById('alatChart').getContext('2d');
+            const ctxAlat = document.getElementById('alatChart').getContext('2d');
+            const alatChart = new Chart(ctxAlat, {
+                type: 'bar',
+                data: {
+                    labels: {!! json_encode($alatCategoryNames) !!},
+                    datasets: [{
+                        label: 'Jumlah Alat lab',
+                        data: {!! json_encode($alatCategoryCounts) !!},
+                        backgroundColor: [
+                            'rgba(0, 191, 255, 0.6)',   // Deep Sky Blue
+                            'rgba(138, 43, 226, 0.6)',  // Blue Violet
+                            'rgba(255, 105, 180, 0.6)', // Hot Pink
+                            'rgba(50, 205, 50, 0.6)'    // Lime Green
+                        ],
+                        borderColor: [
+                            'rgba(0, 191, 255, 1)',
+                            'rgba(138, 43, 226, 1)',
+                            'rgba(255, 105, 180, 1)',
+                            'rgba(50, 205, 50, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        },
+                        x: {
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        }
+                    }
+                }
+            });
+            const ctxBahan = document.getElementById('bahanChart').getContext('2d');
+            const bahanChart = new Chart(ctxBahan, {
+                type: 'bar',
+                data: {
+                    labels: {!! json_encode($bahanCategoryNames) !!},
+                    datasets: [{
+                        label: 'Jumlah Bahan Kimia',
+                        data: {!! json_encode($bahanCategoryCounts) !!},
+                        backgroundColor: [
+                            'rgba(0, 191, 255, 0.6)',   // Deep Sky Blue
+                            'rgba(138, 43, 226, 0.6)',  // Blue Violet
+                            'rgba(255, 105, 180, 0.6)', // Hot Pink
+                            'rgba(50, 205, 50, 0.6)'    // Lime Green
+                        ],
+                        borderColor: [
+                            'rgba(0, 191, 255, 1)',
+                            'rgba(138, 43, 226, 1)',
+                            'rgba(255, 105, 180, 1)',
+                            'rgba(50, 205, 50, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        },
+                        x: {
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        }
+                    }
+                }
+            });
+        </script>
+
+        {{-- Menghapus kartu Total Stok Keluar Keseluruhan --}}
+        {{-- <div class="col-md-6 col-lg-4 col-xl-3">
+            <div class="card dashboard-card">
+                <div class="card-body d-flex align-items-center">
+                    <div class="icon-wrapper bg-custom-stock-out">
+                        <i class="bi bi-calendar-minus"></i>
+                    </div>
+                    <div class="text-content ms-3">
+                        <h5 class="card-title">Total Stok Keluar Keseluruhan</h5>
+                        <h2 class="card-value">{{ $stockOutTotalCount }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div> --}}
     </div>
 
     <style>
@@ -138,49 +284,77 @@
 
         .icon-wrapper {
             font-size: 2.5rem;
+            /* Ukuran ikon lebih besar */
             width: 70px;
+            /* Lebar wrapper ikon */
             height: 70px;
+            /* Tinggi wrapper ikon */
             border-radius: 50%;
+            /* Membuat lingkaran sempurna */
             display: flex;
             justify-content: center;
             align-items: center;
             flex-shrink: 0;
             /* Mencegah ikon menyusut */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            /* Bayangan pada ikon */
+            /* Bayangan pada ikon untuk efek menonjol */
+            color: white;
+            /* Pastikan ikon berwarna putih untuk kontras */
         }
 
-        /* Warna latar belakang ikon yang disesuaikan dengan tema */
-        .bg-primary-dark {
-            background-color: #007bff;
+        /* Warna latar belakang ikon yang disesuaikan dengan tema ungu/biru/pink */
+        /* Warna untuk kartu baru */
+        .bg-custom-total-stock {
+            background-color: #f1eb47;
         }
 
-        /* Biru */
-        .bg-info-dark {
-            background-color: #17a2b8;
+        /* Blue Violet */
+        .bg-custom-stock-in-month {
+            background-color: #00BFFF;
         }
 
-        /* Teal */
-        .bg-success-dark {
-            background-color: #28a745;
+        /* Deep Sky Blue */
+        .bg-custom-stock-out-month {
+            background-color: #d81d3d;
+            color: #333;
         }
 
-        /* Hijau */
-        .bg-danger-dark {
-            background-color: #dc3545;
+        /* Pink, teks gelap untuk kontras */
+
+        /* Warna untuk kartu lama (disesuaikan agar lebih harmonis) */
+        .bg-custom-alat {
+            background-color: #20c997;
         }
 
-        /* Merah */
-        .bg-warning-dark {
-            background-color: #ffc107;
+        /* Hijau terang (teal) */
+        .bg-custom-bahan {
+            background-color: #6f42c1;
+        }
+
+        /* Ungu */
+        .bg-custom-kategori {
+            background-color: #fd7e14;
+            color: #333;
+        }
+
+        canvas#alatChart {
+            background-color: transparent;
+            color: #ffffff;
         }
 
         /* Kuning */
+
+        /* Orange */
+        .bg-custom-stock-out {
+            background-color: #de1d30;
+        }
+
+        /* Merah */
         /* Anda bisa menyesuaikan warna ini agar lebih sesuai dengan palet ungu/biru */
         /* Misalnya:
-            .bg-primary-dark { background-color: rgba(0, 191, 255, 0.7); } // Deep Sky Blue transparan
-            .bg-info-dark    { background-color: rgba(138, 43, 226, 0.7); } // Blue Violet transparan
-            */
+                            .bg-custom-alat { background-color: rgba(0, 191, 255, 0.7); } // Deep Sky Blue transparan
+                            .bg-custom-bahan { background-color: rgba(138, 43, 226, 0.7); } // Blue Violet transparan
+                            */
 
         /* Responsive Adjustments */
         @media (max-width: 767.98px) {

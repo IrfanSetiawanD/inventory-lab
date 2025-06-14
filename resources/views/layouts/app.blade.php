@@ -30,40 +30,103 @@
 
         .sidebar {
             min-height: 100vh;
-            background-color: #3040e6;
-            /* Warna sidebar lebih gelap dari gradien */
+            background-color: #2236ed;
+            /* Warna sidebar kembali ke ungu gelap */
             color: white;
             box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
             /* Bayangan sidebar */
+            padding: 0;
+            /* Hapus padding langsung dari .sidebar untuk mengontrolnya lebih granular di dalam */
+            box-sizing: border-box;
+            /* Penting untuk konsistensi lebar */
+            flex-shrink: 0;
+            /* Sangat penting: Mencegah sidebar menyusut */
+            flex-grow: 0;
+            /* Mencegah sidebar memanjang */
+            width: 250px;
+            /* Lebar 250px tetap diatur di atribut style HTML */
         }
 
-        .sidebar a {
+        .sidebar h4 {
+            color: #ffffff;
+            /* Warna judul sidebar */
+            font-weight: 800;
+            padding-top: 2rem;
+            /* Meningkatkan padding atas untuk menengahkan secara vertikal */
+            padding-bottom: 1rem;
+            /* Padding bawah */
+            padding-left: 1rem;
+            /* Padding kiri */
+            padding-right: 1rem;
+            /* Padding kanan */
+            text-align: center;
+            /* Pastikan judul tetap di tengah horizontal */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+            /* Efek bayangan teks untuk daya tarik */
+        }
+
+        .sidebar hr {
+            margin: 0 1rem 20px 1rem;
+            /* Margin horizontal agar hr sejajar dengan padding konten */
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar ul {
+            /* Target the ul (nav flex-column) untuk padding horizontal utama */
+            padding: 0 1rem;
+            /* Berikan padding horizontal ke seluruh daftar menu */
+            list-style: none;
+            /* Hapus bullet default */
+            margin: 0;
+            /* Hapus margin default ul */
+        }
+
+        .sidebar .nav-item {
+            width: 100%;
+            /* Pastikan item navigasi mengisi lebar penuh dalam ul */
+            margin-bottom: 5px;
+            /* Spasi antar item menu */
+            box-sizing: border-box;
+            /* Penting untuk konsistensi lebar padding/border */
+        }
+
+        .sidebar .nav-link {
             color: rgba(255, 255, 255, 0.8);
             /* Warna link lebih terang */
             text-decoration: none;
             padding: 12px 15px;
-            /* Padding untuk area klik lebih besar */
+            /* Padding internal untuk konten link */
             transition: background-color 0.3s ease, color 0.3s ease;
             border-radius: 8px;
             /* Sudut membulat pada link */
-            margin-bottom: 5px;
-            /* Spasi antar item menu */
             display: flex;
             /* Mengatur ikon dan teks */
             align-items: center;
+            width: 100%;
+            /* Pastikan elemen A mengambil lebar penuh dari .nav-item */
+            flex-shrink: 0;
+            /* Mencegah item link menyusut */
+            white-space: nowrap;
+            /* Mencegah teks wrapping */
+            box-sizing: border-box;
+            /* Pastikan padding dihitung dalam total lebar elemen */
+            overflow: hidden;
+            /* Sembunyikan konten yang melampaui batas */
+            text-overflow: ellipsis;
+            /* Tambahkan elipsis (...) untuk teks yang terpotong */
         }
 
-        .sidebar a:hover {
+        .sidebar .nav-link:hover {
             background-color: rgba(255, 255, 255, 0.1);
             /* Latar belakang hover transparan */
             color: #ffffff;
             /* Warna teks full putih saat hover */
         }
 
-        .sidebar .active {
+        .sidebar .nav-link.active {
             background-color: #00BFFF;
             /* Warna aktif Deep Sky Blue */
-            color: #182faf;
+            color: #2D0B42;
             /* Teks gelap untuk kontras */
             font-weight: 700;
             /* Tebal untuk item aktif */
@@ -71,22 +134,33 @@
             /* Bayangan untuk item aktif */
         }
 
-        .sidebar .active i {
-            color: #182faf;
-            /* Pastikan ikon juga gelap */
-        }
-
-        .sidebar h4 {
-            color: #FFC0CB;
-            /* Warna pink untuk judul sidebar */
-            font-weight: 800;
-            margin-bottom: 20px;
+        .sidebar .nav-link.active i {
+            color: #2D0B42;
+            /* Pastikan ikon juga gelap saat aktif */
         }
 
         .content-area {
             flex-grow: 1;
             padding: 25px;
             /* Padding lebih besar untuk area konten */
+        }
+
+        /* Kelas untuk judul halaman yang konsisten (Dashboard, Kategori, dll.) */
+        .page-header-container {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            /* Garis bawah yang halus */
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            /* Ukuran judul */
+            font-weight: 700;
+            color: #ffffff;
+            /* Warna putih */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            /* Sedikit bayangan teks */
         }
 
         /* Penyesuaian untuk elemen Bootstrap agar sesuai tema gelap */
@@ -176,11 +250,12 @@
             border-color: #bd2130;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
     <div class="d-flex">
-        <div class="sidebar p-3" style="width: 250px;">
+        <div class="sidebar" style="width: 250px;">
             <h4 class="text-center">Inventory Lab</h4>
             <hr>
             <ul class="nav flex-column">
@@ -193,31 +268,31 @@
                 <li class="nav-item mb-2">
                     <a class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}"
                         href="{{ route('categories.index') }}">
-                        <i class="bi bi-box me-2"></i>Kategori
+                        <i class="bi bi-tags me-2"></i>Kategori
                     </a>
                 </li>
                 <li class="nav-item mb-2">
                     <a class="nav-link {{ request()->routeIs('alat.*') ? 'active' : '' }}"
                         href="{{ route('alat.index') }}">
-                        <i class="bi bi-tools me-2"></i>Alat Lab {{-- Mengganti ikon flask --}}
+                        <i class="bi bi-beaker-fill me-2"></i>Alat Lab
                     </a>
                 </li>
                 <li class="nav-item mb-2">
                     <a class="nav-link {{ request()->routeIs('bahan.*') ? 'active' : '' }}"
                         href="{{ route('bahan.index') }}">
-                        <i class="bi bi-droplet-fill me-2"></i>Bahan Kimia {{-- Mengganti ikon droplet-half --}}
+                        <i class="bi bi-droplet-fill me-2"></i>Bahan Kimia
                     </a>
                 </li>
                 <li class="nav-item mb-2">
                     <a class="nav-link {{ request()->routeIs('stock-in.*') ? 'active' : '' }}"
                         href="{{ route('stock-in.index') }}">
-                        <i class="bi bi-truck me-2"></i>Stok Masuk
+                        <i class="bi bi-arrow-up-right-circle me-2"></i>Stok Masuk
                     </a>
                 </li>
                 <li class="nav-item mb-2">
                     <a class="nav-link {{ request()->routeIs('stock-out.*') ? 'active' : '' }}"
                         href="{{ route('stock-out.index') }}">
-                        <i class="bi bi-box-arrow-right me-2"></i>Stok Keluar
+                        <i class="bi bi-arrow-down-left-circle me-2"></i>Stok Keluar
                     </a>
                 </li>
                 <li class="nav-item mb-2">
@@ -226,7 +301,7 @@
                         <i class="bi bi-file-earmark-pdf me-2"></i>Laporan
                     </a>
                 </li>
-                <li class="nav-item mt-auto"> {{-- Tambahkan mt-auto untuk push ke bawah --}}
+                <li class="nav-item mt-auto">
                     <!-- Logout Button -->
                     <form action="{{ route('logout') }}" method="POST" class="d-grid mt-4">
                         @csrf
@@ -238,13 +313,16 @@
             </ul>
 
         </div>
-        <div class="flex-grow-1 p-4 content-area"> {{-- Menambahkan kelas content-area --}}
+        <div class="flex-grow-1 p-4 content-area">
+            {{-- Ini adalah tempat untuk menyisipkan header halaman dinamis --}}
+            @yield('page_header')
+
             @yield('content')
         </div>
     </div>
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigF/00aJ/l2P/PNJ2L" crossorigin="anonymous">
+        xintegrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigF/00aJ/l2P/PNJ2L" crossorigin="anonymous">
     </script>
 </body>
 
