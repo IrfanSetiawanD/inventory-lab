@@ -71,6 +71,129 @@
                 </div>
             </div>
         </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Statistik Alat Lab per Kategori</h5>
+                        <canvas id="alatChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Statistik Bahan Kimia per Kategori</h5>
+                        <canvas id="bahanChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        
+        <script>
+            const ctx = document.getElementById('alatChart').getContext('2d');
+            const alatChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {!! json_encode($categoryNames) !!},
+                    datasets: [{
+                        label: 'Jumlah Alat Lab per Kategori',
+                        data: {!! json_encode($alatPerKategori) !!},
+                        backgroundColor: [
+                            'rgba(0, 191, 255, 0.6)',   // Deep Sky Blue
+                            'rgba(138, 43, 226, 0.6)',  // Blue Violet
+                            'rgba(255, 105, 180, 0.6)', // Hot Pink
+                            'rgba(50, 205, 50, 0.6)'    // Lime Green
+                        ],
+                        borderColor: [
+                            'rgba(0, 191, 255, 1)',
+                            'rgba(138, 43, 226, 1)',
+                            'rgba(255, 105, 180, 1)',
+                            'rgba(50, 205, 50, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff' // warna teks legend
+                            }
+                        },
+                        tooltip: {
+                            bodyColor: '#ffffff',
+                            titleColor: '#ffffff',
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)' // tooltip gelap
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: '#ffffff' // warna label sumbu X
+                            },
+                            grid: {
+                                color: 'rgba(255,255,255,0.1)' // garis bantu sumbu X
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#ffffff' // warna label sumbu Y
+                            },
+                            grid: {
+                                color: 'rgba(255,255,255,0.1)' // garis bantu sumbu Y
+                            }
+                        }
+                    }
+                }
+            });
+
+            const ctxBahan = document.getElementById('bahanChart').getContext('2d');
+            const bahanChart = new Chart(ctxBahan, {
+                type: 'bar',
+                data: {
+                    labels: {!! json_encode($bahanCategoryNames) !!},
+                    datasets: [{
+                        label: 'Jumlah Bahan Kimia',
+                        data: {!! json_encode($bahanCategoryCounts) !!},
+                        backgroundColor: [
+                            'rgba(0, 191, 255, 0.6)',   // Deep Sky Blue
+                            'rgba(138, 43, 226, 0.6)',  // Blue Violet
+                            'rgba(255, 105, 180, 0.6)', // Hot Pink
+                            'rgba(50, 205, 50, 0.6)'    // Lime Green
+                        ],
+                        borderColor: [
+                            'rgba(0, 191, 255, 1)',
+                            'rgba(138, 43, 226, 1)',
+                            'rgba(255, 105, 180, 1)',
+                            'rgba(50, 205, 50, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        },
+                        x: {
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        }
+                    }
+                }
+            });
+        </script>
     </div>
 
     <style>
@@ -173,6 +296,11 @@
         /* Merah */
         .bg-warning-dark {
             background-color: #ffc107;
+        }
+
+        canvas#alatChart {
+            background-color: transparent;
+            color: #ffffff;
         }
 
         /* Kuning */
