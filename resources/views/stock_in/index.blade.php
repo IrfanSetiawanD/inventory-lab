@@ -60,8 +60,8 @@
             </table>
         </div>
         {{-- Jika Anda memiliki pagination untuk $stocks, tambahkan di sini --}}
-        {{-- <div class="mt-3">
+        <div class="mt-3">
             {{ $stocks->links() }}
-        </div> --}}
+        </div>
     </div>
 @endsection
