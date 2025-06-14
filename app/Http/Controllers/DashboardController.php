@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 use App\Models\AlatLab;
 use App\Models\BahanKimia;
 use App\Models\Category;
@@ -41,6 +44,24 @@ class DashboardController extends Controller
         $bahanKimiaCount = BahanKimia::count(); // Jumlah jenis bahan kimia (bukan total quantity)
         $categoriesCount = Category::count(); // Jumlah kategori
         $stockOutTotalCount = StockOut::sum('quantity'); // Total quantity stok keluar secara keseluruhan
+
+        // Data chart Bahan Kimia per Kategori
+        $alatLabStats = alatLab::select('categories.name', DB::raw('count(*) as total'))
+            ->join('categories', 'alat_labs.category_id', '=', 'categories.id')
+            ->groupBy('categories.name')
+            ->get();
+
+        $alatCategoryNames = $alatLabStats->pluck('name');
+        $alatCategoryCounts = $alatLabStats->pluck('total');
+
+        // Data chart Bahan Kimia per Kategori
+        $bahanKimiaStats = BahanKimia::select('categories.name', DB::raw('count(*) as total'))
+            ->join('categories', 'bahan_kimias.category_id', '=', 'categories.id')
+            ->groupBy('categories.name')
+            ->get();
+
+        $bahanCategoryNames = $bahanKimiaStats->pluck('name');
+        $bahanCategoryCounts = $bahanKimiaStats->pluck('total');
 
         return view('dashboard', compact(
             'totalStock',

@@ -96,6 +96,112 @@
                 </div>
             </div>
         </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Statistik Alat Lab per Kategori</h5>
+                        <canvas id="alatChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>  
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Statistik Bahan Kimia per Kategori</h5>
+                        <canvas id="bahanChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        
+        <script>
+            const ctx = document.getElementById('alatChart').getContext('2d');
+            const ctxAlat = document.getElementById('alatChart').getContext('2d');
+            const alatChart = new Chart(ctxAlat, {
+                type: 'bar',
+                data: {
+                    labels: {!! json_encode($alatCategoryNames) !!},
+                    datasets: [{
+                        label: 'Jumlah Alat lab',
+                        data: {!! json_encode($alatCategoryCounts) !!},
+                        backgroundColor: [
+                            'rgba(0, 191, 255, 0.6)',   // Deep Sky Blue
+                            'rgba(138, 43, 226, 0.6)',  // Blue Violet
+                            'rgba(255, 105, 180, 0.6)', // Hot Pink
+                            'rgba(50, 205, 50, 0.6)'    // Lime Green
+                        ],
+                        borderColor: [
+                            'rgba(0, 191, 255, 1)',
+                            'rgba(138, 43, 226, 1)',
+                            'rgba(255, 105, 180, 1)',
+                            'rgba(50, 205, 50, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        },
+                        x: {
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        }
+                    }
+                }
+            });
+            const ctxBahan = document.getElementById('bahanChart').getContext('2d');
+            const bahanChart = new Chart(ctxBahan, {
+                type: 'bar',
+                data: {
+                    labels: {!! json_encode($bahanCategoryNames) !!},
+                    datasets: [{
+                        label: 'Jumlah Bahan Kimia',
+                        data: {!! json_encode($bahanCategoryCounts) !!},
+                        backgroundColor: [
+                            'rgba(0, 191, 255, 0.6)',   // Deep Sky Blue
+                            'rgba(138, 43, 226, 0.6)',  // Blue Violet
+                            'rgba(255, 105, 180, 0.6)', // Hot Pink
+                            'rgba(50, 205, 50, 0.6)'    // Lime Green
+                        ],
+                        borderColor: [
+                            'rgba(0, 191, 255, 1)',
+                            'rgba(138, 43, 226, 1)',
+                            'rgba(255, 105, 180, 1)',
+                            'rgba(50, 205, 50, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        },
+                        x: {
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        }
+                    }
+                }
+            });
+        </script>
 
         {{-- Menghapus kartu Total Stok Keluar Keseluruhan --}}
         {{-- <div class="col-md-6 col-lg-4 col-xl-3">
@@ -230,6 +336,13 @@
             background-color: #fd7e14;
             color: #333;
         }
+
+        canvas#alatChart {
+            background-color: transparent;
+            color: #ffffff;
+        }
+
+        /* Kuning */
 
         /* Orange */
         .bg-custom-stock-out {
