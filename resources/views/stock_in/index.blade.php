@@ -20,13 +20,16 @@
         <tbody>
             @foreach ($stocks as $index => $stock)
                 <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $stock->item_name }}</td>
-                    <td>{{ ucfirst($stock->type) }}</td>
-                    <td>{{ $stock->quantity }}</td>
-                    <td>{{ $stock->date }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+            <td>{{ $index + 1 }}</td>
+            <td>{{ $stock->itemable->nama ?? '-' }}</td>
+            <td>{{ class_basename($stock->itemable_type) }}</td>
+            <td>{{ $stock->quantity }}</td>
+            <td>{{ $stock->date }}</td>
+            <td>
+                <a href="{{ route('stock-in.edit', $stock->id) }}" class="btn btn-sm btn-warning">Edit</a>
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
 @endsection

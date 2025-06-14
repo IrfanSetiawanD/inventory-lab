@@ -31,17 +31,42 @@ class StockInController extends Controller
             'date' => 'required|date',
         ]);
 
-        $stockIn = StockIn::create($request->all());
-
-        // Tambahkan ke stok sesuai jenis
-        if ($request->type === 'alat') {
-            $item = AlatLab::findOrFail($request->item_id);
-        } else {
-            $item = BahanKimia::findOrFail($request->item_id);
-        }
-
-        $item->increment('stock', $request->quantity);
-
-        return redirect()->route('stock-in.index')->with('success', 'Stok masuk berhasil ditambahkan');
+        $model = $request->type === 'alat' ? AlatLab::class : BahanKimia::class;
+        
+        StockIn::create([
+            'itemable_id' => $request->item_id,
+            'itemable_type' => $model,
+            'quantity' => $request->quantity,
+            'date' => $request->date,
+        ]);
+        return redirect()->route('stock-in.index')->with('success', 'Stock In berhasil ditambahkan.');
     }
+
+    public function edit(StockIn $stockIn)
+    {
+        $alat = AlatLab::all();
+        $bahan = BahanKimia::all();
+        return view('stock_in.edit', compact('stockIn', 'alat', 'bahan'));
+    }
+
+    public function update(Request $request, StockIn $stockIn)
+    {
+        $request->validate([
+            'type' => 'required|in:alat,bahan',
+            'item_id' => 'required',
+            'quantity' => 'required|integer|min:1',
+            'date' => 'required|date',
+        ]);
+
+        $model = $request->type === 'alat' ? AlatLab::class : BahanKimia::class;
+
+        $stockIn->update([
+            'itemable_id' => $request->item_id,
+            'itemable_type' => $model,
+            'quantity' => $request->quantity,
+            'date' => $request->date,
+        ]);
+        return redirect()->route('stock-in.index')->with('success', 'Stock In berhasil diperbarui.');
+    }
+
 }
