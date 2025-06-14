@@ -10,7 +10,6 @@ use App\Models\BahanKimia;
 use App\Models\Category;
 use App\Models\StockIn;
 use App\Models\StockOut;
-use Illuminate\Http\Request;
 use Carbon\Carbon; // Import Carbon untuk manipulasi tanggal dan bulan
 
 class DashboardController extends Controller
@@ -70,7 +69,11 @@ class DashboardController extends Controller
             'alatLabCount',
             'bahanKimiaCount',
             'categoriesCount',
-            'stockOutTotalCount'
+            'stockOutTotalCount',
+            'alatCategoryNames',
+            'alatCategoryCounts',
+            'bahanCategoryNames',
+            'bahanCategoryCounts'
         ));
     }
 }
