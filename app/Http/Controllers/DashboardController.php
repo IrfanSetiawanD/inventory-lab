@@ -25,15 +25,14 @@ class DashboardController extends Controller
         $stockOutCount = StockOut::count();
         $stockOutMonth = StockOut::whereMonth('date', now()->month)->count();
 
-        // Contoh data chart: jumlah alat lab per kategori
-        $categoryNames = Category::pluck('name');
-        $alatPerKategori = [];
+        // Data chart Bahan Kimia per Kategori
+        $alatLabStats = alatLab::select('categories.name', DB::raw('count(*) as total'))
+            ->join('categories', 'alat_labs.category_id', '=', 'categories.id')
+            ->groupBy('categories.name')
+            ->get();
 
-        foreach ($categoryNames as $name) {
-            $alatPerKategori[] = AlatLab::whereHas('category', function ($q) use ($name) {
-                $q->where('name', $name);
-            })->count();
-        }
+        $alatCategoryNames = $alatLabStats->pluck('name');
+        $alatCategoryCounts = $alatLabStats->pluck('total');
 
         // Data chart Bahan Kimia per Kategori
         $bahanKimiaStats = BahanKimia::select('categories.name', DB::raw('count(*) as total'))
@@ -53,7 +52,9 @@ class DashboardController extends Controller
             'categoryNames' => $categoryNames,
             'alatPerKategori' => $alatPerKategori,
             'bahanCategoryNames' => $bahanCategoryNames,
-            'bahanCategoryCounts' => $bahanCategoryCounts
+            'bahanCategoryCounts' => $bahanCategoryCounts,
+            'alatCategoryNames' => $alatCategoryNames,
+            'alatCategoryCounts' => $alatCategoryCounts
         ]);
     }
 }

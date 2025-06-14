@@ -80,7 +80,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>  
         <div class="row mt-5">
             <div class="col-md-12">
                 <div class="card dashboard-card">
@@ -94,13 +94,14 @@
         
         <script>
             const ctx = document.getElementById('alatChart').getContext('2d');
-            const alatChart = new Chart(ctx, {
+            const ctxAlat = document.getElementById('alatChart').getContext('2d');
+            const alatChart = new Chart(ctxAlat, {
                 type: 'bar',
                 data: {
-                    labels: {!! json_encode($categoryNames) !!},
+                    labels: {!! json_encode($alatCategoryNames) !!},
                     datasets: [{
-                        label: 'Jumlah Alat Lab per Kategori',
-                        data: {!! json_encode($alatPerKategori) !!},
+                        label: 'Jumlah Alat lab',
+                        data: {!! json_encode($alatCategoryCounts) !!},
                         backgroundColor: [
                             'rgba(0, 191, 255, 0.6)',   // Deep Sky Blue
                             'rgba(138, 43, 226, 0.6)',  // Blue Violet
@@ -119,39 +120,21 @@
                 options: {
                     responsive: true,
                     plugins: {
-                        legend: {
-                            labels: {
-                                color: '#ffffff' // warna teks legend
-                            }
-                        },
-                        tooltip: {
-                            bodyColor: '#ffffff',
-                            titleColor: '#ffffff',
-                            backgroundColor: 'rgba(0, 0, 0, 0.7)' // tooltip gelap
-                        }
+                        legend: { display: false }
                     },
                     scales: {
-                        x: {
-                            ticks: {
-                                color: '#ffffff' // warna label sumbu X
-                            },
-                            grid: {
-                                color: 'rgba(255,255,255,0.1)' // garis bantu sumbu X
-                            }
-                        },
                         y: {
                             beginAtZero: true,
-                            ticks: {
-                                color: '#ffffff' // warna label sumbu Y
-                            },
-                            grid: {
-                                color: 'rgba(255,255,255,0.1)' // garis bantu sumbu Y
-                            }
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        },
+                        x: {
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
                         }
                     }
                 }
             });
-
             const ctxBahan = document.getElementById('bahanChart').getContext('2d');
             const bahanChart = new Chart(ctxBahan, {
                 type: 'bar',
