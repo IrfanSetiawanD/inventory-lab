@@ -2,41 +2,28 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-// Tidak perlu lagi mengimpor AlatLab dan BahanKimia secara langsung di sini
-// karena morphTo() akan menanganinya secara dinamis.
 
 class StockIn extends Model
 {
-    // Jika Anda belum menambahkan HasFactory, tambahkan jika Anda menggunakannya untuk seeder/factory
-    // use Illuminate\Database\Eloquent\Factories\HasFactory;
-    // use HasFactory;
+    use HasFactory;
 
-    // Pastikan fillable mencakup kolom polymorphic
     protected $fillable = [
-        'itemable_id',   // Kolom ID dari item terkait
-        'itemable_type', // Kolom tipe model (contoh: 'App\Models\AlatLab' atau 'App\Models\BahanKimia')
+        'itemable_id', // Ini menyimpan ID item (alat atau bahan)
+        'itemable_type', // Ini menyimpan kelas model (misal: 'App\Models\AlatLab')
+        'item_name', // Ini menyimpan nama item
         'quantity',
         'date',
+        // tambahkan kolom lain yang relevan jika ada
     ];
 
     /**
-     * Dapatkan model itemable pemilik (BahanKimia atau AlatLab).
-     * Ini adalah hubungan polymorphic.
+     * Get the parent item (AlatLab or BahanKimia) that owns the stock in.
+     * Definisi relasi polimorfik untuk 'item'.
      */
-    public function itemable()
+    public function item()
     {
         return $this->morphTo();
-    }
-
-    /**
-     * Accessor untuk menampilkan nama item (alat atau bahan).
-     * Sekarang menggunakan hubungan polymorphic yang sebenarnya.
-     */
-    public function getItemNameAttribute()
-    {
-        // Panggil hubungan itemable, lalu akses properti 'name' dari model terkait.
-        // Jika itemable null (misal relasi tidak ada atau item sudah dihapus), kembalikan null.
-        return $this->itemable?->name;
     }
 }

@@ -11,7 +11,7 @@ class StockInController extends Controller
 {
     public function index()
     {
-        $stocks = StockIn::with('item')->paginate(10);
+        $stocks = StockIn::paginate(10);
         return view('stock_in.index', compact('stocks'));
     }
 
@@ -31,15 +31,41 @@ class StockInController extends Controller
             'date' => 'required|date',
         ]);
 
-        $model = $request->type === 'alat' ? AlatLab::class : BahanKimia::class;
-        
+        $itemableId = $request->item_id;
+        $itemableType = null;
+        $itemName = null;
+        $item = null;
+
+        if ($request->type === 'alat') {
+            $item = AlatLab::find($itemableId);
+            if (!$item) {
+                return redirect()->back()->withErrors(['item_id' => 'Alat Lab not found.'])->withInput();
+            }
+            $itemableType = AlatLab::class;
+            $itemName = $item->name;
+        } elseif ($request->type === 'bahan') {
+            $item = BahanKimia::find($itemableId);
+            if (!$item) {
+                return redirect()->back()->withErrors(['item_id' => 'Bahan Kimia not found.'])->withInput();
+            }
+            $itemableType = BahanKimia::class;
+            $itemName = $item->name;
+        }
+
         StockIn::create([
-            'itemable_id' => $request->item_id,
-            'itemable_type' => $model,
+            'itemable_id' => $itemableId,
+            'itemable_type' => $itemableType,
+            'item_name' => $itemName,
             'quantity' => $request->quantity,
             'date' => $request->date,
         ]);
-        return redirect()->route('stock-in.index')->with('success', 'Stock In berhasil ditambahkan.');
+
+        if ($item) {
+            $item->quantity += $request->quantity;
+            $item->save();
+        }
+
+        return redirect()->route('stock-in.index')->with('success', 'Stock In successfully added.');
     }
 
     public function edit(StockIn $stockIn)
@@ -58,15 +84,63 @@ class StockInController extends Controller
             'date' => 'required|date',
         ]);
 
-        $model = $request->type === 'alat' ? AlatLab::class : BahanKimia::class;
+        $itemableId = $request->item_id;
+        $itemableType = null;
+        $itemName = null;
+        $item = null;
+        $oldQuantity = $stockIn->quantity;
+
+        if ($request->type === 'alat') {
+            $item = AlatLab::find($itemableId);
+            if (!$item) {
+                return redirect()->back()->withErrors(['item_id' => 'Alat Lab not found.'])->withInput();
+            }
+            $itemableType = AlatLab::class;
+            $itemName = $item->name;
+        } elseif ($request->type === 'bahan') {
+            $item = BahanKimia::find($itemableId);
+            if (!$item) {
+                return redirect()->back()->withErrors(['item_id' => 'Bahan Kimia not found.'])->withInput();
+            }
+            $itemableType = BahanKimia::class;
+            $itemName = $item->name;
+        }
 
         $stockIn->update([
-            'itemable_id' => $request->item_id,
-            'itemable_type' => $model,
+            'itemable_id' => $itemableId,
+            'itemable_type' => $itemableType,
+            'item_name' => $itemName,
             'quantity' => $request->quantity,
             'date' => $request->date,
         ]);
-        return redirect()->route('stock-in.index')->with('success', 'Stock In berhasil diperbarui.');
+
+        if ($item) {
+            $changeInQuantity = $request->quantity - $oldQuantity;
+            $item->quantity += $changeInQuantity;
+            $item->save();
+        }
+
+        return redirect()->route('stock-in.index')->with('success', 'Stock In successfully updated.');
     }
 
+    public function destroy(StockIn $stockIn)
+    {
+        $itemToUpdate = null;
+
+        if ($stockIn->itemable_type && class_exists($stockIn->itemable_type)) {
+            $modelClass = $stockIn->itemable_type;
+            $itemToUpdate = $modelClass::find($stockIn->itemable_id);
+        }
+
+        if ($itemToUpdate) {
+            $itemToUpdate->quantity -= $stockIn->quantity;
+            if ($itemToUpdate->quantity < 0) {
+                $itemToUpdate->quantity = 0;
+            }
+            $itemToUpdate->save();
+        }
+
+        $stockIn->delete();
+        return redirect()->route('stock-in.index')->with('success', 'Stok Masuk successfully deleted.');
+    }
 }
