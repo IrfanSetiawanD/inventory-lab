@@ -170,7 +170,7 @@
                 efisiensi operasional laboratorium modern.
             </p>
             <div class="developer-info">
-                Dikembangkan oleh: <span>Irfan Setiawan Dawolo</span>
+                Dikembangkan oleh: <span>Irfan Setiawan Dawolo, Muhammad Endrico</span>
             </div>
         </div>
     </div>
