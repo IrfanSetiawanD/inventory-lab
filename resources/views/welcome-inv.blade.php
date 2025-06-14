@@ -226,10 +226,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto"> {{-- ms-auto untuk rata kanan --}}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
+                        <a class="nav-link" href="{{ route('dashboard') }}">Home</a> {{-- Mengarahkan Home ke Dashboard --}}
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
+                        <a class="nav-link" href="{{ route('about') }}">About</a> {{-- Menambahkan link ke halaman About --}}
                     </li>
                     {{-- Menghapus menu Features, Implementation, Contact, dan Sign In dari navbar --}}
                     {{-- Tombol Login dan Register sudah ada di hero section --}}

@@ -15,6 +15,11 @@ Route::get('/', function () {
     return view('welcome-inv');
 });
 
+// Route untuk halaman About baru
+Route::get('/about', function () {
+    return view('pages.about'); // Mengarahkan ke file about.blade.php yang baru dibuat
+})->name('about');
+
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
