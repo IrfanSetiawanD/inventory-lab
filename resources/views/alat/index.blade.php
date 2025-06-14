@@ -1,8 +1,13 @@
 @extends('layouts.app')
 
+@section('page_header')
+    <div class="page-header-container">
+        <h3 class="page-title">Daftar Alat Laboratorium</h3>
+    </div>
+@endsection
+
 @section('content')
     <div class="container mt-4">
-        <h4 class="mb-4">Daftar Alat Laboratorium</h4>
 
         @if (session('success'))
             <div class="alert alert-success mt-3" role="alert">
