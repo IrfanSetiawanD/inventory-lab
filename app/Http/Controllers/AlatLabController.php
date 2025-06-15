@@ -12,7 +12,11 @@ class AlatLabController extends Controller
     public function index()
     {
         $alats = AlatLab::with('category')->paginate(10);
-        return view('alat.index', compact('alats'));
+        $categories = Category::all();
+        return view('alat.index', compact(
+            'alats',
+            'categories'
+        ));
     }
 
     public function create()
@@ -96,5 +100,43 @@ class AlatLabController extends Controller
 
         $alat->delete();
         return redirect()->route('alat.index')->with('success', 'Alat berhasil dihapus');
+    }
+
+    // public function search(Request $request)
+    // {
+    //     $query = $request->get('query');
+
+    //     $alatLabs = [];
+
+    //     if ($query && strlen($query) >= 4) {
+    //         $alatLabs = AlatLab::with('category')
+    //             ->searchByName($query)
+    //             ->get();
+    //     }
+
+    //     return response()->json($alatLabs);
+    // }
+
+    public function search(Request $request)
+    {
+        $query = $request->get('query');
+        $categoryId = $request->get('category_id');
+
+        $alatLabs = \App\Models\AlatLab::with('category');
+
+        if ($query && strlen($query) >= 4) {
+            $alatLabs->where('name', 'like', '%' . $query . '%');
+        }
+
+        if ($categoryId) {
+            $alatLabs->where('category_id', $categoryId);
+        }
+
+        $results = $alatLabs->get();
+
+        // Kirim partial view agar bisa dirender via jQuery
+        return response()->json([
+            'html' => view('alat.partials.table_rows', compact('results'))->render()
+        ]);
     }
 }

@@ -27,6 +27,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 Route::middleware('auth')->group(function () {
     Route::resource('categories', CategoryController::class)->middleware(['auth']);
     Route::resource('alat', AlatLabController::class)->middleware(['auth']);
+    Route::get('/alat-lab/search', [AlatLabController::class, 'search'])->name('alatlab.search');
     Route::resource('bahan', BahanKimiaController::class)->middleware(['auth']);
     Route::resource('stock-in', StockInController::class)->middleware(['auth']);
     Route::resource('stock-out', StockOutController::class)->middleware(['auth']);
