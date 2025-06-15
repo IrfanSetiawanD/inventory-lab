@@ -34,7 +34,7 @@
         </div>
 
         <div class="table-responsive" style="position: relative;">
-            <table class="table table-bordered table-striped align-middle mb-0">
+            <table class="table table-bordered table-striped align-middle" style="margin-bottom: 0;">
                 <thead class="table-dark">
                     <tr>
                         <th>No</th>
@@ -47,21 +47,16 @@
                         <th>Aksi</th>
                     </tr>
                 </thead>
+                <tbody id="alatLabTableBody" style="position: relative;">
+                    @include('alat.partials.table_rows', ['alats' => $alats])
+                </tbody>
             </table>
         
-            <div id="table-container" style="position: relative;">
-                <table class="table table-bordered table-striped align-middle">
-                    <tbody id="alatLabTableBody">
-                        @include('alat.partials.table_rows', ['alats' => $alats])
-                    </tbody>
-                </table>
-        
-                <!-- Loading di dalam container -->
-                <div id="loading" style="display: none;">
-                    <div class="text-center">
-                        <img src="{{ asset('images/loading.gif') }}" alt="Loading..." width="50">
-                        <p style="color: black;">Memuat data...</p>
-                    </div>
+            <!-- Loading overlay di atas tbody -->
+            <div id="loading" style="display: none;">
+                <div class="text-center">
+                    <img src="{{ asset('images/loading.gif') }}" alt="Loading..." width="50">
+                    <p style="color: black;">Memuat data...</p>
                 </div>
             </div>
         
@@ -131,28 +126,22 @@
         });
     </script>
     <style>
-        #table-container {
-            position: relative;
-        }
-
         #loading {
             position: absolute;
-            top: 0;
+            top: 42px; /* Tinggi thead */
             left: 0;
-            width: 100%;
-            height: 100%;
+            right: 0;
+            bottom: 60px; /* ruang untuk pagination */
             background: rgba(255, 255, 255, 0.6);
+            z-index: 5;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 10;
             pointer-events: none;
         }
 
-        /* Blur effect saat loading */
-        #table-container.loading tbody {
+        #alatLabTableBody.blur {
             filter: blur(3px);
-            pointer-events: none;
         }
     </style>
 @endsection
