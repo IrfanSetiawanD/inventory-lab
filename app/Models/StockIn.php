@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 
 class StockIn extends Model
 {
@@ -25,5 +28,38 @@ class StockIn extends Model
     public function item()
     {
         return $this->morphTo();
+    }
+
+    public function itemable(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    public static function thisMonthWithItem(): Builder
+    {
+        return self::with(['itemable.category'])
+            ->whereMonth('date', Carbon::now()->month)
+            ->whereYear('date', Carbon::now()->year);
+    }
+
+    public static function stokMasukBulanIni()
+    {
+        $bulan = Carbon::now()->month;
+        $tahun = Carbon::now()->year;
+
+        $stockInAlat = self::where('itemable_type', AlatLab::class)
+            ->whereMonth('date', $bulan)
+            ->whereYear('date', $tahun)
+            ->sum('quantity');
+
+        $stockInBahan = self::where('itemable_type', BahanKimia::class)
+            ->whereMonth('date', $bulan)
+            ->whereYear('date', $tahun)
+            ->sum('quantity');
+
+        return [
+            'alat' => $stockInAlat,
+            'bahan' => $stockInBahan,
+        ];
     }
 }

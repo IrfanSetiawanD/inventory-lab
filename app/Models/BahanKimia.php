@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class BahanKimia extends Model
 {
@@ -33,5 +34,13 @@ class BahanKimia extends Model
   public function stockOuts()
   {
     return $this->morphMany(StockOut::class, 'itemable');
+  }
+
+  public static function getCategoryStats()
+  {
+    return self::select('categories.name', DB::raw('count(*) as total'))
+        ->join('categories', 'bahan_kimias.category_id', '=', 'categories.id')
+        ->groupBy('categories.name')
+        ->get();
   }
 }
