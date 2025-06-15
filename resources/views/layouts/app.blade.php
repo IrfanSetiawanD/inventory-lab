@@ -37,6 +37,9 @@
         }
 
         .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
             min-height: 100vh;
             background-color: #2236ed;
             /* Warna sidebar kembali ke ungu gelap */
@@ -148,6 +151,7 @@
         }
 
         .content-area {
+            margin-left: 250px;
             flex-grow: 1;
             padding: 25px;
             /* Padding lebih besar untuk area konten */
