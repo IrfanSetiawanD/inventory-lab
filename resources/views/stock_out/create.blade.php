@@ -2,15 +2,15 @@
 
 @section('page_header')
     <div class="page-header-container">
-        <h3 class="page-title">Tambah Stok Masuk</h3>
+        <h3 class="page-title">Tambah Stok Keluar</h3>
     </div>
 @endsection
 
 @section('content')
     <div class="container mt-4">
-        <div class="card dashboard-card"> {{-- Menggunakan card untuk tampilan yang lebih rapi --}}
+        <div class="card dashboard-card">
             <div class="card-body">
-                <form method="POST" action="{{ route('stock-in.store') }}">
+                <form method="POST" action="{{ route('stock-out.store') }}">
                     @csrf
 
                     <div class="mb-3">
@@ -36,7 +36,7 @@
                             @forelse($alat as $item)
                                 <option value="{{ $item->id }}"
                                     {{ old('item_id_alat') == $item->id ? 'selected' : '' }}>
-                                    {{ $item->name }}</option> {{-- Pastikan atribut name adalah 'name' bukan 'nama' --}}
+                                    {{ $item->name }}</option>
                             @empty
                                 <option value="" disabled>Tidak ada alat tersedia. Tambahkan alat terlebih dahulu.
                                 </option>
@@ -93,7 +93,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary">Simpan</button>
-                    <a href="{{ route('stock-in.index') }}" class="btn btn-secondary">Batal</a>
+                    <a href="{{ route('stock-out.index') }}" class="btn btn-secondary">Batal</a>
                 </form>
             </div>
         </div>
