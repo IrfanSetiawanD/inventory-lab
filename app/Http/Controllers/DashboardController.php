@@ -45,20 +45,12 @@ class DashboardController extends Controller
         $stockOutTotalCount = StockOut::sum('quantity'); // Total quantity stok keluar secara keseluruhan
 
         // Data chart Alat Lab per Kategori
-        $alatLabStats = alatLab::select('categories.name', DB::raw('count(*) as total'))
-            ->join('categories', 'alat_labs.category_id', '=', 'categories.id')
-            ->groupBy('categories.name')
-            ->get();
-
+        $alatLabStats = AlatLab::getCategoryStats();
         $alatCategoryNames = $alatLabStats->pluck('name');
         $alatCategoryCounts = $alatLabStats->pluck('total');
 
         // Data chart Bahan Kimia per Kategori
-        $bahanKimiaStats = BahanKimia::select('categories.name', DB::raw('count(*) as total'))
-            ->join('categories', 'bahan_kimias.category_id', '=', 'categories.id')
-            ->groupBy('categories.name')
-            ->get();
-
+        $bahanKimiaStats = BahanKimia::getCategoryStats();
         $bahanCategoryNames = $bahanKimiaStats->pluck('name');
         $bahanCategoryCounts = $bahanKimiaStats->pluck('total');
 
