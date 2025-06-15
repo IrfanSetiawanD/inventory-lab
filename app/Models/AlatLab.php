@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 class AlatLab extends Model
 {
@@ -51,5 +53,11 @@ class AlatLab extends Model
         ->join('categories', 'alat_labs.category_id', '=', 'categories.id')
         ->groupBy('categories.name')
         ->get();
+  }
+
+  // Scope pencarian berdasarkan nama
+  public function scopeSearchByName(Builder $query, $keyword)
+  {
+    return $query->where('name', 'like', '%' . $keyword . '%');
   }
 }

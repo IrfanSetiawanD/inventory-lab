@@ -9,10 +9,30 @@ use Illuminate\Support\Facades\Storage; // Pastikan ini di-import!
 
 class AlatLabController extends Controller
 {
-    public function index()
+    // public function index()
+    // {
+    //     $alats = AlatLab::with('category')->paginate(10);
+    //     $categories = Category::all();
+    //     return view('alat.index', compact(
+    //         'alats',
+    //         'categories'
+    //     ));
+    // }
+
+    public function index(Request $request)
     {
-        $alats = AlatLab::with('category')->paginate(10);
-        return view('alat.index', compact('alats'));
+        $query = $request->input('query');
+
+        $alats = AlatLab::with('category')
+            ->when($query, fn($q) => $q->where('name', 'like', "%$query%"))
+            ->paginate(10);
+
+        if ($request->ajax()) {
+            return view('alat.partials.table_rows', compact('alats'))->render();
+        }
+
+        $categories = Category::all();
+        return view('alat.index', compact('alats', 'categories'));
     }
 
     public function create()
@@ -96,5 +116,45 @@ class AlatLabController extends Controller
 
         $alat->delete();
         return redirect()->route('alat.index')->with('success', 'Alat berhasil dihapus');
+    }
+
+    // public function search(Request $request)
+    // {
+    //     $query = $request->get('query');
+
+    //     $alatLabs = [];
+
+    //     if ($query && strlen($query) >= 4) {
+    //         $alatLabs = AlatLab::with('category')
+    //             ->searchByName($query)
+    //             ->get();
+    //     }
+
+    //     return response()->json($alatLabs);
+    // }
+
+    public function search(Request $request)
+    {
+        $query = $request->get('query');
+        $categoryId = $request->get('category_id');
+
+        $alats = AlatLab::with('category')
+        ->when($query, function ($q) use ($query) {
+            $q->where('name', 'like', "%$query%");
+        })
+        ->when($categoryId, function ($q) use ($categoryId) {
+            $q->where('category_id', $categoryId);
+        })
+        ->paginate(10); // tetap gunakan paginate agar link pagination muncul
+
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('alat.partials.table_rows', compact('alats'))->render(),
+                'pagination' => view('alat.partials.pagination', compact('alats'))->render()
+            ]);
+        }
+
+        // fallback jika buka dari browser langsung
+        return redirect()->route('alat.index');
     }
 }
