@@ -120,6 +120,16 @@
             <div class="col-md-12">
                 <div class="card dashboard-card">
                     <div class="card-body">
+                        <h5 class="card-title mb-4">Stok Masuk Bulan Ini per Jenis Barang</h5>
+                        <canvas id="stockInChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card dashboard-card">
+                    <div class="card-body">
                         <h5 class="card-title mb-4">Proporsi Stok Masuk per Kategori ({{ now()->format('F') }})</h5>
                         <canvas id="stockInPieChart" height="100"></canvas>
                     </div>
@@ -213,6 +223,44 @@
                 }
             });
 
+            const ctxStockIn = document.getElementById('stockInChart').getContext('2d');
+            const stockInChart = new Chart(ctxStockIn, {
+                type: 'bar',
+                data: {
+                    labels: ['Alat Lab', 'Bahan Kimia'],
+                    datasets: [{
+                        label: 'Stok Masuk Bulan Ini',
+                        data: [{{ $stockInAlat }}, {{ $stockInBahan }}],
+                        backgroundColor: [
+                            'rgba(0, 191, 255, 0.6)',   // Deep Sky Blue
+                            'rgba(255, 105, 180, 0.6)'  // Hot Pink
+                        ],
+                        borderColor: [
+                            'rgba(0, 191, 255, 1)',
+                            'rgba(255, 105, 180, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        },
+                        x: {
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        }
+                    }
+                }
+            });
+            
             const stockInPieCtx = document.getElementById('stockInPieChart').getContext('2d');
             const stockInPieChart = new Chart(stockInPieCtx, {
                 type: 'pie',

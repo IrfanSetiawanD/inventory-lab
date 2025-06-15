@@ -41,4 +41,25 @@ class StockIn extends Model
             ->whereMonth('date', Carbon::now()->month)
             ->whereYear('date', Carbon::now()->year);
     }
+
+    public static function stokMasukBulanIni()
+    {
+        $bulan = Carbon::now()->month;
+        $tahun = Carbon::now()->year;
+
+        $stockInAlat = self::where('itemable_type', AlatLab::class)
+            ->whereMonth('date', $bulan)
+            ->whereYear('date', $tahun)
+            ->sum('quantity');
+
+        $stockInBahan = self::where('itemable_type', BahanKimia::class)
+            ->whereMonth('date', $bulan)
+            ->whereYear('date', $tahun)
+            ->sum('quantity');
+
+        return [
+            'alat' => $stockInAlat,
+            'bahan' => $stockInBahan,
+        ];
+    }
 }

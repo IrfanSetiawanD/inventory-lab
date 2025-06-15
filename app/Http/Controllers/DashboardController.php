@@ -79,7 +79,10 @@ class DashboardController extends Controller
         $stockInCategoryNames = array_keys($categoryTotals);
         $stockInCategoryTotals = array_values($categoryTotals);
 
-        return view('dashboard', compact(
+        $stokMasukData = StockIn::stokMasukBulanIni(); // Ambil data dari model
+
+        return view('dashboard', array_merge(
+        compact(
             'totalStock',
             'totalStockInMonth',
             'totalStockOutMonth',
@@ -93,6 +96,11 @@ class DashboardController extends Controller
             'bahanCategoryCounts',
             'stockInCategoryNames',
             'stockInCategoryTotals'
+        ),
+        [
+            'stockInAlat' => $stokMasukData['alat'],
+            'stockInBahan' => $stokMasukData['bahan']
+        ]
         ));
     }
 }
