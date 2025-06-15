@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 
 class AlatLab extends Model
 {
@@ -42,5 +43,13 @@ class AlatLab extends Model
   public function stockOuts()
   {
     return $this->morphMany(StockOut::class, 'itemable');
+  }
+
+  public static function getCategoryStats()
+  {
+    return self::select('categories.name', DB::raw('count(*) as total'))
+        ->join('categories', 'alat_labs.category_id', '=', 'categories.id')
+        ->groupBy('categories.name')
+        ->get();
   }
 }

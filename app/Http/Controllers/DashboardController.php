@@ -44,25 +44,37 @@ class DashboardController extends Controller
         $categoriesCount = Category::count(); // Jumlah kategori
         $stockOutTotalCount = StockOut::sum('quantity'); // Total quantity stok keluar secara keseluruhan
 
-        // Data chart Bahan Kimia per Kategori
-        $alatLabStats = alatLab::select('categories.name', DB::raw('count(*) as total'))
-            ->join('categories', 'alat_labs.category_id', '=', 'categories.id')
-            ->groupBy('categories.name')
-            ->get();
-
+        // Data chart Alat Lab per Kategori
+        $alatLabStats = AlatLab::getCategoryStats();
         $alatCategoryNames = $alatLabStats->pluck('name');
         $alatCategoryCounts = $alatLabStats->pluck('total');
 
         // Data chart Bahan Kimia per Kategori
-        $bahanKimiaStats = BahanKimia::select('categories.name', DB::raw('count(*) as total'))
-            ->join('categories', 'bahan_kimias.category_id', '=', 'categories.id')
-            ->groupBy('categories.name')
-            ->get();
-
+        $bahanKimiaStats = BahanKimia::getCategoryStats();
         $bahanCategoryNames = $bahanKimiaStats->pluck('name');
         $bahanCategoryCounts = $bahanKimiaStats->pluck('total');
 
-        return view('dashboard', compact(
+        $stockIns = StockIn::thisMonthWithItem()->get();
+
+        $categoryTotals = [];
+
+        foreach ($stockIns as $stockIn) {
+            if ($stockIn->itemable && $stockIn->itemable->category) {
+                $categoryName = $stockIn->itemable->category->name;
+                if (!isset($categoryTotals[$categoryName])) {
+                    $categoryTotals[$categoryName] = 0;
+                }
+                $categoryTotals[$categoryName] += $stockIn->quantity;
+            }
+        }
+
+        $stockInCategoryNames = array_keys($categoryTotals);
+        $stockInCategoryTotals = array_values($categoryTotals);
+
+        $stokMasukData = StockIn::stokMasukBulanIni(); // Ambil data dari model
+
+        return view('dashboard', array_merge(
+        compact(
             'totalStock',
             'totalStockInMonth',
             'totalStockOutMonth',
@@ -73,7 +85,14 @@ class DashboardController extends Controller
             'alatCategoryNames',
             'alatCategoryCounts',
             'bahanCategoryNames',
-            'bahanCategoryCounts'
+            'bahanCategoryCounts',
+            'stockInCategoryNames',
+            'stockInCategoryTotals'
+        ),
+        [
+            'stockInAlat' => $stokMasukData['alat'],
+            'stockInBahan' => $stokMasukData['bahan']
+        ]
         ));
     }
 }
