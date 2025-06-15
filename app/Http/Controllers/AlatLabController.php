@@ -9,14 +9,30 @@ use Illuminate\Support\Facades\Storage; // Pastikan ini di-import!
 
 class AlatLabController extends Controller
 {
-    public function index()
+    // public function index()
+    // {
+    //     $alats = AlatLab::with('category')->paginate(10);
+    //     $categories = Category::all();
+    //     return view('alat.index', compact(
+    //         'alats',
+    //         'categories'
+    //     ));
+    // }
+
+    public function index(Request $request)
     {
-        $alats = AlatLab::with('category')->paginate(10);
+        $query = $request->input('query');
+
+        $alats = AlatLab::with('category')
+            ->when($query, fn($q) => $q->where('name', 'like', "%$query%"))
+            ->paginate(10);
+
+        if ($request->ajax()) {
+            return view('alat.partials.table_rows', compact('alats'))->render();
+        }
+
         $categories = Category::all();
-        return view('alat.index', compact(
-            'alats',
-            'categories'
-        ));
+        return view('alat.index', compact('alats', 'categories'));
     }
 
     public function create()
@@ -122,21 +138,23 @@ class AlatLabController extends Controller
         $query = $request->get('query');
         $categoryId = $request->get('category_id');
 
-        $alatLabs = \App\Models\AlatLab::with('category');
+        $alats = AlatLab::with('category')
+        ->when($query, function ($q) use ($query) {
+            $q->where('name', 'like', "%$query%");
+        })
+        ->when($categoryId, function ($q) use ($categoryId) {
+            $q->where('category_id', $categoryId);
+        })
+        ->paginate(10); // tetap gunakan paginate agar link pagination muncul
 
-        if ($query && strlen($query) >= 4) {
-            $alatLabs->where('name', 'like', '%' . $query . '%');
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('alat.partials.table_rows', compact('alats'))->render(),
+                'pagination' => view('alat.partials.pagination', compact('alats'))->render()
+            ]);
         }
 
-        if ($categoryId) {
-            $alatLabs->where('category_id', $categoryId);
-        }
-
-        $results = $alatLabs->get();
-
-        // Kirim partial view agar bisa dirender via jQuery
-        return response()->json([
-            'html' => view('alat.partials.table_rows', compact('results'))->render()
-        ]);
+        // fallback jika buka dari browser langsung
+        return redirect()->route('alat.index');
     }
 }
