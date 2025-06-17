@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('alat', AlatLabController::class)->middleware(['auth']);
     Route::get('/alat-lab/search', [AlatLabController::class, 'search'])->name('alatlab.search');
     Route::resource('bahan', BahanKimiaController::class)->middleware(['auth']);
+    Route::get('/bahan-kimia/search', [BahanKimiaController::class, 'search'])->name('bahankimia.search');
     Route::resource('stock-in', StockInController::class)->middleware(['auth']);
     Route::resource('stock-out', StockOutController::class)->middleware(['auth']);
     Route::get('/laporan', [ReportController::class, 'index'])->name('laporan')->middleware(['auth']);

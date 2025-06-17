@@ -10,11 +10,20 @@ use Illuminate\Validation\Rule; // Pastikan ini di-import
 
 class BahanKimiaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Pastikan variabel yang dikirim ke view adalah 'bahans' untuk konsistensi
-        $bahans = BahanKimia::with('category')->latest()->paginate(10);
-        return view('bahan.index', compact('bahans'));
+        $query = $request->input('query');
+
+        $bahans = BahanKimia::with('category')
+            ->when($query, fn($q) => $q->where('name', 'like', "%$query%"))
+            ->paginate(10);
+
+        if ($request->ajax()) {
+            return view('bahan.partials.table_rows', compact('bahans'))->render();
+        }
+
+        $categories = Category::all();
+        return view('bahan.index', compact('bahans', 'categories'));
     }
 
     public function create()
@@ -99,5 +108,30 @@ class BahanKimiaController extends Controller
         }
         $bahan->delete();
         return redirect()->route('bahan.index')->with('success', 'Bahan Kimia berhasil dihapus.');
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->get('query');
+        $categoryId = $request->get('category_id');
+
+        $bahans = BahanKimia::with('category')
+        ->when($query, function ($q) use ($query) {
+            $q->where('name', 'like', "%$query%");
+        })
+        ->when($categoryId, function ($q) use ($categoryId) {
+            $q->where('category_id', $categoryId);
+        })
+        ->paginate(10); // tetap gunakan paginate agar link pagination muncul
+
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('bahan.partials.table_rows', compact('bahans'))->render(),
+                'pagination' => view('bahan.partials.pagination', compact('bahans'))->render()
+            ]);
+        }
+
+        // fallback jika buka dari browser langsung
+        return redirect()->route('bahan.index');
     }
 }
