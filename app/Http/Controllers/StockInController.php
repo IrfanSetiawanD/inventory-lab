@@ -13,6 +13,8 @@ class StockInController extends Controller
     {
         $query = $request->input('query');
         $type = $request->input('type');
+        $sort = $request->input('sort', 'date'); // default sort
+        $direction = $request->input('direction', 'desc');
 
         $stocks = StockIn::when($query, function ($q) use ($query) {
                 $q->where('item_name', 'like', "%{$query}%");
@@ -23,7 +25,7 @@ class StockInController extends Controller
                     $q->where('itemable_type', $model);
                 }
             })
-            ->orderByDesc('date')
+            ->orderBy($sort, $direction)
             ->paginate(10);
 
         if ($request->ajax()) {
@@ -114,6 +116,8 @@ class StockInController extends Controller
     {
         $query = $request->input('query');
         $type = $request->input('type');
+        $sort = $request->input('sort', 'date'); // default sort
+        $direction = $request->input('direction', 'desc');
 
         $stocks = StockIn::when($query, function ($q) use ($query) {
                 $q->where('item_name', 'like', "%{$query}%");
@@ -124,7 +128,7 @@ class StockInController extends Controller
                     $q->where('itemable_type', $model);
                 }
             })
-            ->orderByDesc('date')
+            ->orderBy($sort, $direction)
             ->paginate(10);
 
         if ($request->ajax()) {

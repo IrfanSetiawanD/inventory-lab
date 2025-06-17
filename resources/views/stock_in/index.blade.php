@@ -37,10 +37,30 @@
                 <thead class="table-dark">
                     <tr>
                         <th>No</th>
-                        <th>Nama Barang</th>
-                        <th>Jenis</th>
-                        <th>Jumlah</th>
-                        <th>Tanggal</th>
+                        <th class="cursor-pointer text-left">
+                            <div class="flex items-center justify-between w-full sortable" data-sort="item_name">
+                                <span>Nama Item</span>
+                                <span class="sort-icon" data-icon-for="item_name">⇅</span>
+                            </div>
+                        </th>
+                        <th class="cursor-pointer text-left">
+                            <div class="flex items-center justify-between w-full sortable" data-sort="itemable_id">
+                                <span>Jenis</span>
+                                <span class="sort-icon" data-icon-for="itemable_id">⇅</span>
+                            </div>
+                        </th>
+                        <th class="cursor-pointer text-left">
+                            <div class="flex items-center justify-between w-full sortable" data-sort="quantity">
+                                <span>Jumlah</span>
+                                <span class="sort-icon" data-icon-for="quantity">⇅</span>
+                            </div>
+                        </th>
+                        <th class="cursor-pointer text-left">
+                            <div class="flex items-center justify-between w-full sortable" data-sort="date">
+                                <span>Tanggal</span>
+                                <span class="sort-icon" data-icon-for="date">⇅</span>
+                            </div>
+                        </th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -64,7 +84,16 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        let sort = 'date';      // default sort
+        let direction = 'desc'; // default direction
         let timer;
+
+        function updateSortIcons() {
+            $('.sort-icon').html('⇅'); // reset semua
+
+            const activeIcon = $(`.sort-icon[data-icon-for="${sort}"]`);
+            activeIcon.html(direction === 'asc' ? '▲' : '▼');
+        }
 
         $(document).ready(function () {
             function fetchData(url = "{{ route('stock_in.search') }}") {
@@ -82,12 +111,15 @@
                             method: 'GET',
                             data: {
                                 query: query,
-                                type: type
+                                type: type,
+                                sort: sort,
+                                direction: direction
                             },
                             success: function (response) {
                                 $('#stockInTableBody').html(response.html);
                                 $('#paginationStockIn').html(response.pagination);
                                 $('#loadingStockIn').hide();
+                                updateSortIcons();
                             },
                             error: function () {
                                 $('#loadingStockIn').hide();
@@ -116,6 +148,21 @@
                 if (url) {
                     fetchData(url);
                 }
+            });
+
+            $(document).on('click', '.sortable', function (e) {
+                e.preventDefault();
+                let clickedSort = $(this).data('sort');
+
+                if (sort === clickedSort) {
+                    // toggle direction
+                    direction = (direction === 'asc') ? 'desc' : 'asc';
+                } else {
+                    sort = clickedSort;
+                    direction = 'desc'; // default to asc on new sort
+                }
+
+                fetchData();
             });
         });
     </script>
