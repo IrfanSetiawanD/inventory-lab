@@ -9,9 +9,30 @@ use Illuminate\Http\Request;
 
 class StockOutController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $stocks = StockOut::paginate(10);
+        $query = $request->input('query');
+        $type = $request->input('type');
+
+        $stocks = StockOut::when($query, function ($q) use ($query) {
+                $q->where('item_name', 'like', "%{$query}%");
+            })
+            ->when($type, function ($q) use ($type) {
+                $model = $type === 'alat' ? 'App\Models\AlatLab' : ($type === 'bahan' ? 'App\Models\BahanKimia' : null);
+                if ($model) {
+                    $q->where('itemable_type', $model);
+                }
+            })
+            ->orderByDesc('date')
+            ->paginate(10);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('stock_out.partials.table_rows', compact('stocks'))->render(),
+                'pagination' => view('stock_out.partials.pagination', compact('stocks'))->render()
+            ]);
+        }
+
         return view('stock_out.index', compact('stocks'));
     }
 
@@ -86,6 +107,34 @@ class StockOutController extends Controller
         }
 
         $stockOut->delete();
+
         return redirect()->route('stock-out.index')->with('success', 'Stok Keluar successfully deleted.');
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $type = $request->input('type');
+
+        $stocks = StockOut::when($query, function ($q) use ($query) {
+                $q->where('item_name', 'like', "%{$query}%");
+            })
+            ->when($type, function ($q) use ($type) {
+                $model = $type === 'alat' ? 'App\Models\AlatLab' : ($type === 'bahan' ? 'App\Models\BahanKimia' : null);
+                if ($model) {
+                    $q->where('itemable_type', $model);
+                }
+            })
+            ->orderByDesc('date')
+            ->paginate(10);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('stock_out.partials.table_rows', compact('stocks'))->render(),
+                'pagination' => view('stock_out.partials.pagination', compact('stocks'))->render()
+            ]);
+        }
+
+        return redirect()->route('stock-out.index');
+    }    
 }
