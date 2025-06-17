@@ -134,7 +134,7 @@ class StockInController extends Controller
             ]);
         }
 
-        return redirect()->route('stock_in.index');
+        return redirect()->route('stock-in.index');
     }
     
 }

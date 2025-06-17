@@ -77,7 +77,7 @@
 
                 clearTimeout(timer);
 
-                if (query.length >= 4 || query.length === 0) {
+                if (query.length >= 2 || query.length === 0) {
                     timer = setTimeout(function () {
                         // $('#alatLabTableBody').hide();
                         $('#loading').show();
@@ -102,7 +102,7 @@
                         });
                     }, 300);
                 } else {
-                    $('#alatLabTableBody').html('<tr><td colspan="8">Ketik minimal 4 huruf...</td></tr>');
+                    $('#alatLabTableBody').html('<tr><td colspan="8">Ketik minimal 2 huruf...</td></tr>');
                     $('#pagination').empty();
                 }
             }
