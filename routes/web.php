@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/alat-lab/search', [AlatLabController::class, 'search'])->name('alatlab.search');
     Route::resource('bahan', BahanKimiaController::class)->middleware(['auth']);
     Route::resource('stock-in', StockInController::class)->middleware(['auth']);
+    Route::get('/stock_in/search', [StockInController::class, 'search'])->name('stock_in.search');
     Route::resource('stock-out', StockOutController::class)->middleware(['auth']);
     Route::get('/laporan', [ReportController::class, 'index'])->name('laporan')->middleware(['auth']);
 
