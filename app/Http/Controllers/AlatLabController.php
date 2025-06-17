@@ -28,7 +28,10 @@ class AlatLabController extends Controller
             ->paginate(10);
 
         if ($request->ajax()) {
-            return view('alat.partials.table_rows', compact('alats'))->render();
+            return response()->json([
+                'html' => view('alat.partials.table_rows', compact('alats'))->render(),
+                'pagination' => view('alat.partials.pagination', compact('alats'))->render()
+            ]);
         }
 
         $categories = Category::all();
