@@ -9,9 +9,10 @@
 @section('content')
     <div class="container mt-4" style="max-width: 95%;">
         <div class="d-flex justify-content-end mb-4 print-hide">
-            <button class="btn btn-info" onclick="window.print()">
-                <i class="bi bi-printer me-2"></i> Cetak Laporan
-            </button>
+            {{-- Tombol ini sekarang akan mengarahkan ke route yang menghasilkan PDF --}}
+            <a href="{{ route('laporan.exportPdf') }}" class="btn btn-info" target="_blank">
+                <i class="bi bi-printer me-2"></i> Cetak Laporan PDF
+            </a>
         </div>
 
         {{-- Section: Laporan Alat Lab --}}
@@ -35,7 +36,7 @@
                             @forelse ($alatLabs as $alat)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ Str::limit($alat->name, 50, '...') }}</td>
+                                    <td>{{ Str::limit($alat->name, 50, '...') }}</td> {{-- Menyesuaikan limit --}}
                                     <td>{{ $alat->category->name ?? '-' }}</td>
                                     <td>{{ $alat->quantity }}</td>
                                     <td>{{ $alat->unit }}</td>
@@ -72,7 +73,7 @@
                             @forelse ($bahanKimias as $bahan)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ Str::limit($bahan->name, 50, '...') }}</td>
+                                    <td>{{ Str::limit($bahan->name, 50, '...') }}</td> {{-- Menyesuaikan limit --}}
                                     <td>{{ $bahan->category->name ?? '-' }}</td>
                                     <td>{{ $bahan->quantity }}</td>
                                     <td>{{ $bahan->unit }}</td>
@@ -109,7 +110,7 @@
                             @forelse ($stockIns as $stock)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ Str::limit($stock->item_name ?? 'N/A', 50, '...') }}</td>
+                                    <td>{{ Str::limit($stock->item_name ?? 'N/A', 50, '...') }}</td> {{-- Menyesuaikan limit --}}
                                     <td>
                                         @php $itemType = trim($stock->itemable_type ?? ''); @endphp
                                         @if ($itemType === 'App\Models\AlatLab')
@@ -155,7 +156,7 @@
                             @forelse ($stockOuts as $stock)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ Str::limit($stock->item_name ?? 'N/A', 50, '...') }}</td>
+                                    <td>{{ Str::limit($stock->item_name ?? 'N/A', 50, '...') }}</td> {{-- Menyesuaikan limit --}}
                                     <td>
                                         @php $itemType = trim($stock->itemable_type ?? ''); @endphp
                                         @if ($itemType === 'App\Models\AlatLab')
@@ -180,8 +181,7 @@
             </div>
         </div>
     </div>
-
-    {{-- Gaya CSS Tambahan --}}
+    {{-- Hapus semua @media print CSS dari sini --}}
     <style>
         .table {
             table-layout: fixed;
@@ -219,48 +219,6 @@
         .table td,
         .table th {
             vertical-align: middle;
-        }
-
-        @media print {
-
-            .print-hide,
-            .page-header-container,
-            .sidebar,
-            .btn,
-            .alert {
-                display: none !important;
-            }
-
-            body {
-                -webkit-print-color-adjust: exact;
-                background: none !important;
-                color: #000 !important;
-            }
-
-            .card,
-            .card-header,
-            .card-body,
-            .table {
-                box-sizing: border-box !important;
-                color: #000 !important;
-                background: #fff !important;
-                page-break-inside: avoid;
-            }
-
-            .table th,
-            .table td {
-                border: 1px solid #000 !important;
-                padding: 5px;
-            }
-
-            .table-dark th {
-                background-color: #e0e0e0 !important;
-                color: #000 !important;
-            }
-
-            .table-striped tbody tr:nth-of-type(odd) {
-                background-color: #f9f9f9 !important;
-            }
         }
     </style>
 @endsection
