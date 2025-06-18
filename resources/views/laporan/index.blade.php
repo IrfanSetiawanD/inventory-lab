@@ -181,32 +181,47 @@
         </div>
     </div>
 
-    {{-- CSS Cetak --}}
+    {{-- Gaya CSS Tambahan --}}
     <style>
+        .table {
+            table-layout: fixed;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        .table th:nth-child(1),
+        .table td:nth-child(1) {
+            width: 6%;
+            text-align: center;
+        }
+
+        .table th:nth-child(2),
+        .table td:nth-child(2) {
+            width: 35%;
+        }
+
+        .table th:nth-child(3),
+        .table td:nth-child(3) {
+            width: 20%;
+        }
+
+        .table th:nth-child(4),
+        .table td:nth-child(4) {
+            width: 15%;
+            text-align: right;
+        }
+
+        .table th:nth-child(5),
+        .table td:nth-child(5) {
+            width: 24%;
+        }
+
+        .table td,
+        .table th {
+            vertical-align: middle;
+        }
+
         @media print {
-            @page {
-                size: A4 portrait;
-                margin: 0.5cm;
-            }
-
-            html,
-            body {
-                margin: 0 !important;
-                padding: 0 !important;
-                width: 100% !important;
-                min-height: 100vh;
-                overflow: hidden;
-                font-size: 10pt;
-                -webkit-print-color-adjust: exact;
-                background: none !important;
-            }
-
-            .container {
-                width: 100% !important;
-                padding: 0.5cm !important;
-                margin: 0 auto !important;
-                box-sizing: border-box;
-            }
 
             .print-hide,
             .page-header-container,
@@ -216,94 +231,35 @@
                 display: none !important;
             }
 
-            .card {
-                border: 1px solid #ccc;
-                box-shadow: none;
-                page-break-inside: avoid;
-                margin-bottom: 20px;
-                background-color: #fff;
-                color: #000;
-                border-radius: 0;
+            body {
+                -webkit-print-color-adjust: exact;
+                background: none !important;
+                color: #000 !important;
             }
 
+            .card,
             .card-header,
-            .card-title {
-                background-color: #e9ecef !important;
-                color: #000;
-                border-bottom: 1px solid #ccc;
-                padding: 10px 15px;
-                font-size: 1.2em;
-                text-align: left;
-            }
-
-            .card-body {
-                padding: 15px;
-            }
-
-            .table-responsive {
-                overflow: visible;
-                margin-bottom: 0;
-            }
-
+            .card-body,
             .table {
-                width: 100%;
-                border-collapse: collapse;
-                border: 1px solid #000;
-                table-layout: fixed;
+                box-sizing: border-box !important;
+                color: #000 !important;
+                background: #fff !important;
+                page-break-inside: avoid;
             }
 
             .table th,
             .table td {
-                border: 1px solid #000;
+                border: 1px solid #000 !important;
                 padding: 5px;
-                vertical-align: top;
-                word-wrap: break-word;
-                white-space: normal;
-                color: #000;
-            }
-
-            .table thead th:nth-child(1),
-            .table tbody td:nth-child(1) {
-                width: 5%;
-                text-align: center;
-            }
-
-            .table thead th:nth-child(2),
-            .table tbody td:nth-child(2) {
-                width: 38%;
-                text-align: left;
-            }
-
-            .table thead th:nth-child(3),
-            .table tbody td:nth-child(3) {
-                width: 17%;
-                text-align: left;
-            }
-
-            .table thead th:nth-child(4),
-            .table tbody td:nth-child(4) {
-                width: 10%;
-                text-align: right;
-            }
-
-            .table thead th:nth-child(5),
-            .table tbody td:nth-child(5) {
-                width: 30%;
-                text-align: left;
             }
 
             .table-dark th {
-                background-color: #dee2e6 !important;
-                color: #000;
-                border-bottom: 1px solid #000;
+                background-color: #e0e0e0 !important;
+                color: #000 !important;
             }
 
             .table-striped tbody tr:nth-of-type(odd) {
-                background-color: #f8f9fa;
-            }
-
-            .table-striped tbody tr:nth-of-type(even) {
-                background-color: #fff;
+                background-color: #f9f9f9 !important;
             }
         }
     </style>
