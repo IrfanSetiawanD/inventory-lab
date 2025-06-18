@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class BahanKimia extends Model
 {
@@ -43,4 +44,11 @@ class BahanKimia extends Model
         ->groupBy('categories.name')
         ->get();
   }
+
+  // Scope pencarian berdasarkan nama
+  public function scopeSearchByName(Builder $query, $keyword)
+  {
+    return $query->where('name', 'like', '%' . $keyword . '%');
+  }
+  
 }

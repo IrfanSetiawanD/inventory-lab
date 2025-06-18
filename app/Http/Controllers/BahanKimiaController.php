@@ -14,6 +14,7 @@ class BahanKimiaController extends Controller
     {
         // Pastikan variabel yang dikirim ke view adalah 'bahans' untuk konsistensi
         $bahans = BahanKimia::with('category')->orderBy('id', 'asc')->paginate(10);
+        $categories = Category::where('type', 'Bahan Kimia')->get();
         return view('bahan.index', compact('bahans'));
     }
 
@@ -99,5 +100,33 @@ class BahanKimiaController extends Controller
         }
         $bahan->delete();
         return redirect()->route('bahan.index')->with('success', 'Bahan Kimia berhasil dihapus.');
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->get('query');
+        $categoryId = $request->get('category_id');
+
+        $bahans = BahanKimia::with('category')
+            ->when($query, function ($q) use ($query) {
+                $q->where('name', 'like', "%$query%");
+            })
+            ->when($categoryId, function ($q) use ($categoryId) {
+                $q->where('category_id', $categoryId);
+            })
+            ->orderBy('id', 'asc') // Urutkan berdasarkan ID secara menaik agar "No" konsisten
+            ->paginate(10); // Tetap gunakan paginate agar link pagination muncul
+
+        // Jika request adalah AJAX, kembalikan JSON berisi HTML untuk tabel dan pagination
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('bahan.partials.table_rows', compact('bahans'))->render(),
+                'pagination' => view('bahan.partials.pagination', compact('bahans'))->render()
+            ]);
+        }
+
+        // Fallback jika diakses langsung dari browser tanpa AJAX (misalnya, untuk pengujian)
+        // Akan mengarahkan kembali ke method index() yang akan me-load data awal
+        return redirect()->route('bahan.index');
     }
 }
