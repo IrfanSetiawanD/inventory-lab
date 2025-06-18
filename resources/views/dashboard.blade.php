@@ -131,12 +131,33 @@
                 <div class="card dashboard-card">
                     <div class="card-body">
                         <h5 class="card-title mb-4">Proporsi Stok Masuk per Kategori ({{ now()->format('F') }})</h5>
-                        <canvas id="stockInPieChart" height="100"></canvas>
+                        <canvas id="stockInPieChart" height="100" style="max-width: 400px; max-height: 400px; margin: 0 auto;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Stok Keluar Bulan Ini per Jenis Barang</h5>
+                        <canvas id="stockOutChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Proporsi Stok Keluar per Kategori ({{ now()->format('F') }})</h5>
+                        <canvas id="stockOutPieChart" height="100" style="max-width: 400px; max-height: 400px; margin: 0 auto;"></canvas>
                     </div>
                 </div>
             </div>
         </div>       
         
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
         <script>
             const ctx = document.getElementById('alatChart').getContext('2d');
             const ctxAlat = document.getElementById('alatChart').getContext('2d');
@@ -269,6 +290,80 @@
                     datasets: [{
                         label: 'Jumlah Stok Masuk',
                         data: {!! json_encode($stockInCategoryTotals) !!},
+                        backgroundColor: [
+                            'rgba(0, 191, 255, 0.6)',   // Deep Sky Blue
+                            'rgba(138, 43, 226, 0.6)',  // Blue Violet
+                            'rgba(255, 105, 180, 0.6)', // Hot Pink
+                            'rgba(50, 205, 50, 0.6)'    // Lime Green
+                        ],
+                        borderColor: [
+                            'rgba(0, 191, 255, 1)',
+                            'rgba(138, 43, 226, 1)',
+                            'rgba(255, 105, 180, 1)',
+                            'rgba(50, 205, 50, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    }
+                }
+            });
+
+            const ctxStockOut = document.getElementById('stockOutChart').getContext('2d');
+            const stockOutChart = new Chart(ctxStockOut, {
+                type: 'bar',
+                data: {
+                    labels: ['Alat Lab', 'Bahan Kimia'],
+                    datasets: [{
+                        label: 'Stok Keluar Bulan Ini',
+                        data: [{{ $stockOutAlat }}, {{ $stockOutBahan }}],
+                        backgroundColor: [
+                            'rgba(0, 191, 255, 0.6)',   // Deep Sky Blue
+                            'rgba(255, 105, 180, 0.6)'  // Hot Pink
+                        ],
+                        borderColor: [
+                            'rgba(0, 191, 255, 1)',
+                            'rgba(255, 105, 180, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        },
+                        x: {
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        }
+                    }
+                }
+            });
+
+            const stockOutPieCtx = document.getElementById('stockOutPieChart').getContext('2d');
+            const stockOutPieChart = new Chart(stockOutPieCtx, {
+                type: 'pie',
+                data: {
+                    labels: {!! json_encode($stockOutCategoryNames) !!},
+                    datasets: [{
+                        label: 'Jumlah Stok Keluar',
+                        data: {!! json_encode($stockOutCategoryTotals) !!},
                         backgroundColor: [
                             'rgba(0, 191, 255, 0.6)',   // Deep Sky Blue
                             'rgba(138, 43, 226, 0.6)',  // Blue Violet

@@ -73,6 +73,26 @@ class DashboardController extends Controller
 
         $stokMasukData = StockIn::stokMasukBulanIni(); // Ambil data dari model
 
+        $stockOuts = StockOut::thisMonthWithItem()->get();
+
+        $categoryOutTotals = [];
+
+        foreach ($stockOuts as $stockOut) {
+            if ($stockOut->itemable && $stockOut->itemable->category) {
+                $categoryName = $stockOut->itemable->category->name;
+                if (!isset($categoryOutTotals[$categoryName])) {
+                    $categoryOutTotals[$categoryName] = 0;
+                }
+                $categoryOutTotals[$categoryName] += $stockOut->quantity;
+            }
+        }
+
+        $stockOutCategoryNames = array_keys($categoryOutTotals);
+        $stockOutCategoryTotals = array_values($categoryOutTotals);
+
+        $stokKeluarData = StockOut::stokKeluarBulanIni(); // Ambil data dari model
+
+
         return view('dashboard', array_merge(
         compact(
             'totalStock',
@@ -87,11 +107,15 @@ class DashboardController extends Controller
             'bahanCategoryNames',
             'bahanCategoryCounts',
             'stockInCategoryNames',
-            'stockInCategoryTotals'
+            'stockInCategoryTotals',
+            'stockOutCategoryNames',
+            'stockOutCategoryTotals'
         ),
         [
             'stockInAlat' => $stokMasukData['alat'],
-            'stockInBahan' => $stokMasukData['bahan']
+            'stockInBahan' => $stokMasukData['bahan'],
+            'stockOutAlat' => $stokKeluarData['alat'],
+            'stockOutBahan' => $stokKeluarData['bahan']
         ]
         ));
     }

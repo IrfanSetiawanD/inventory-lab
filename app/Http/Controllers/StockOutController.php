@@ -136,5 +136,5 @@ class StockOutController extends Controller
         }
 
         return redirect()->route('stock-out.index');
-    }    
+    }
 }
