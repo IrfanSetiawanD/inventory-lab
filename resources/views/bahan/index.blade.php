@@ -26,7 +26,7 @@
             <div class="col-md-4">
                 <select id="categoryFilter" class="form-control">
                     <option value="">-- Semua Kategori --</option>
-                    @foreach($categories as $category)
+                    @foreach ($categories as $category)
                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                     @endforeach
                 </select>
@@ -62,7 +62,7 @@
     <script>
         let timer;
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             function fetchData(url = "{{ route('bahankimia.search') }}") {
                 const query = $('#searchInput').val();
                 const categoryId = $('#categoryFilter').val();
@@ -70,7 +70,7 @@
                 clearTimeout(timer);
 
                 if (query.length >= 4 || query.length === 0) {
-                    timer = setTimeout(function () {
+                    timer = setTimeout(function() {
                         // $('#bahanKimiaTableBody').hide();
                         $('#loading').show();
 
@@ -81,13 +81,13 @@
                                 query: query,
                                 category_id: categoryId
                             },
-                            success: function (response) {
+                            success: function(response) {
                                 $('#bahanKimiaTableBody').html(response.html);
                                 $('#pagination').html(response.pagination);
                                 $('#loading').hide();
                                 // $('#bahanKimiaTableBody').show();
                             },
-                            error: function () {
+                            error: function() {
                                 $('#loading').hide();
                                 alert('Gagal memuat data.');
                             }
@@ -99,16 +99,16 @@
                 }
             }
 
-            $('#searchInput').on('keyup', function () {
+            $('#searchInput').on('keyup', function() {
                 fetchData();
             });
 
-            $('#categoryFilter').on('change', function () {
+            $('#categoryFilter').on('change', function() {
                 fetchData();
             });
 
             // Delegasi klik pagination agar tetap bisa bekerja setelah replace HTML
-            $(document).on('click', '.pagination a', function (e) {
+            $(document).on('click', '.pagination a', function(e) {
                 e.preventDefault();
                 let url = $(this).attr('href');
                 if (url) {
@@ -120,10 +120,12 @@
     <style>
         #loading {
             position: absolute;
-            top: 42px; /* Tinggi thead */
+            top: 42px;
+            /* Tinggi thead */
             left: 0;
             right: 0;
-            bottom: 60px; /* ruang untuk pagination */
+            bottom: 60px;
+            /* ruang untuk pagination */
             background: rgba(255, 255, 255, 0.6);
             z-index: 5;
             display: flex;

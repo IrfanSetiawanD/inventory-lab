@@ -15,7 +15,7 @@ class BahanKimiaController extends Controller
         // Pastikan variabel yang dikirim ke view adalah 'bahans' untuk konsistensi
         $bahans = BahanKimia::with('category')->orderBy('id', 'asc')->paginate(10);
         $categories = Category::where('type', 'Bahan Kimia')->get();
-        return view('bahan.index', compact('bahans'));
+        return view('bahan.index', compact('bahans', 'categories'));
     }
 
     public function create()
