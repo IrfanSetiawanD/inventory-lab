@@ -158,16 +158,14 @@
         <div class="about-card fadeIn">
             <h1 class="about-title">Tentang Inventory Lab</h1>
             <p class="about-text">
-                Inventory Lab adalah sistem manajemen inventaris yang dirancang khusus untuk mempermudah pengelolaan
-                alat dan bahan kimia di laboratorium. Aplikasi ini memungkinkan pengguna untuk melacak stok secara
-                akurat, memantau pergerakan masuk dan keluar, serta menghasilkan laporan yang relevan untuk pemantauan
-                inventaris.
+                Inventory Lab adalah sistem manajemen inventaris yang memudahkan pengelolaan alat dan bahan kimia di
+                laboratorium. Aplikasi ini membantu melacak stok, mencatat barang masuk dan keluar, serta membuat
+                laporan inventaris.
             </p>
             <p class="about-text">
-                Dengan Inventory Lab, Anda dapat mengoptimalkan ketersediaan persediaan, mengurangi pemborosan,
-                dan memastikan bahwa semua yang Anda butuhkan selalu tersedia untuk eksperimen dan riset Anda.
-                Sistem ini dibangun dengan antarmuka yang intuitif dan fitur-fitur yang komprehensif untuk mendukung
-                efisiensi operasional laboratorium modern.
+                Dengan Inventory Lab, persediaan lebih terkontrol, pemborosan bisa dikurangi, dan semua kebutuhan riset
+                atau eksperimen selalu tersedia. Sistem ini dirancang dengan tampilan yang mudah digunakan dan fitur
+                lengkap untuk mendukung kerja laboratorium secara efisien.
             </p>
             <div class="developer-info">
                 Dikembangkan oleh: <span>Irfan Setiawan Dawolo, Muhammad Endrico, Muhammad Iqbal, Daniel Lenggono
