@@ -313,6 +313,13 @@
                         <i class="bi bi-file-earmark-pdf me-2"></i>Laporan
                     </a>
                 </li>
+                {{-- Tambahkan menu Profil di sini --}}
+                <li class="nav-item mb-2">
+                    <a class="nav-link {{ request()->routeIs('profile.edit') ? 'active' : '' }}"
+                        href="{{ route('profile.edit') }}">
+                        <i class="bi bi-person-circle me-2"></i>Profil
+                    </a>
+                </li>
                 <li class="nav-item mt-auto">
                     <!-- Logout Button -->
                     <form action="{{ route('logout') }}" method="POST" class="d-grid mt-4">

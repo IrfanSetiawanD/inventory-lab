@@ -37,10 +37,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan', [ReportController::class, 'index'])->name('laporan')->middleware(['auth']);
     Route::get('/laporan/export-pdf', [ReportController::class, 'exportPdf'])->name('laporan.exportPdf');
 
-
-
-    // Routes untuk profil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    // profile.settings akan menampilkan form edit profil (profile.edit)
+    Route::get('/profile/settings', [ProfileController::class, 'settings'])->name('profile.settings');
+    // profile.update dan profile.destroy tetap sama, mereka memproses data dari form edit
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
