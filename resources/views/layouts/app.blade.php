@@ -16,6 +16,8 @@
 
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
@@ -311,6 +313,12 @@
                     <a class="nav-link {{ request()->routeIs('laporan') ? 'active' : '' }}"
                         href="{{ route('laporan') }}">
                         <i class="bi bi-file-earmark-pdf me-2"></i>Laporan
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link {{ request()->routeIs('profile.edit') ? 'active' : '' }}"
+                        href="{{ route('profile.edit') }}">
+                        <i class="bi bi-person-circle me-2"></i>Profile
                     </a>
                 </li>
                 <li class="nav-item mt-auto">

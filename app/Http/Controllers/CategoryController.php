@@ -29,6 +29,11 @@ class CategoryController extends Controller
 
         Category::create($validatedData); // Gunakan $validatedData setelah validasi
 
+        activity()
+    ->causedBy(auth()->user())
+    ->performedOn($category)
+    ->log('Menambahkan kategori baru');
+
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
@@ -52,12 +57,23 @@ class CategoryController extends Controller
 
         $category->update($validatedData); // Gunakan $validatedData setelah validasi
 
+        activity()
+    ->causedBy(auth()->user())
+    ->performedOn($category)
+    ->log('Mengubah data kategori');
+
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
     public function destroy(Category $category)
     {
         $category->delete();
+
+        activity()
+    ->causedBy(auth()->user())
+    ->performedOn($category)
+    ->log('Menghapus kategori');
+
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil dihapus.');
     }
 }

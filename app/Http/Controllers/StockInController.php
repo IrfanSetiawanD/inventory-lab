@@ -88,6 +88,11 @@ class StockInController extends Controller
             $item->save();
         }
 
+        activity()
+    ->causedBy(auth()->user())
+    ->performedOn($stockIn)
+    ->log('Menambahkan stok masuk');
+
         return redirect()->route('stock-in.index')->with('success', 'Stock In successfully added.');
     }
 
@@ -109,6 +114,12 @@ class StockInController extends Controller
         }
 
         $stockIn->delete();
+
+        activity()
+    ->causedBy(auth()->user())
+    ->performedOn($stockIn)
+    ->log('Menghapus catatan stok masuk');
+
         return redirect()->route('stock-in.index')->with('success', 'Stok Masuk successfully deleted.');
     }
 

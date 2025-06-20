@@ -54,6 +54,13 @@ class BahanKimiaController extends Controller
             'image' => $imagePath,
         ]);
 
+        activity()
+    ->causedBy(auth()->user())
+    ->performedOn($bahan)
+    ->log('Menambahkan data Bahan Kimia');
+
+
+
         return redirect()->route('bahan.index')->with('success', 'Bahan Kimia berhasil ditambahkan.');
     }
 
@@ -90,6 +97,11 @@ class BahanKimiaController extends Controller
 
         $bahan->update($data);
 
+        activity()
+    ->causedBy(auth()->user())
+    ->performedOn($bahan)
+    ->log('Mengubah data Bahan Kimia');
+
         return redirect()->route('bahan.index')->with('success', 'Bahan Kimia berhasil diperbarui.');
     }
 
@@ -99,6 +111,12 @@ class BahanKimiaController extends Controller
             Storage::disk('public')->delete($bahan->image);
         }
         $bahan->delete();
+
+        activity()
+    ->causedBy(auth()->user())
+    ->performedOn($bahan)
+    ->log('Menghapus data Bahan Kimia');
+
         return redirect()->route('bahan.index')->with('success', 'Bahan Kimia berhasil dihapus.');
     }
 

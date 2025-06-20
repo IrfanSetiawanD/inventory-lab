@@ -24,18 +24,28 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        $request->user()->fill($request->validated());
+    public function update(Request $request)
+{
+    $user = Auth::user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'bio' => 'nullable|string|max:255',
+        'location' => 'nullable|string|max:255',
+        'tanggal_lahir' => 'nullable|date',
+        'no_telp' => 'nullable|string|max:20',
+    ]);
 
-        $request->user()->save();
+    $user->update([
+        'name' => $request->name,
+        'bio' => $request->bio,
+        'location' => $request->location,
+        'tanggal_lahir' => $request->tanggal_lahir,
+        'no_telp' => $request->no_telp,
+    ]);
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
-    }
+    return back()->with('success', 'Data profil berhasil diperbarui.');
+}
 
     /**
      * Delete the user's account.
@@ -57,4 +67,19 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function updatePassword(Request $request)
+{
+    $request->validate([
+        'current_password' => ['required', 'current_password'],
+        'password' => ['required', 'confirmed', 'min:8'],
+    ]);
+
+    $user = $request->user();
+    $user->update([
+        'password' => bcrypt($request->password),
+    ]);
+
+    return back()->with('status', 'password-updated');
+}
 }

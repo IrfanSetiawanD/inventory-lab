@@ -72,6 +72,11 @@ class AlatLabController extends Controller
             'image' => $imagePath, // Store the path returned by Storage::putFile (or store())
         ]);
 
+        activity()
+        ->causedBy(auth()->user())
+        ->performedOn($alat)
+        ->log('Menambahkan data Alat Lab');
+
         return redirect()->route('alat.index')->with('success', 'Alat Laboratorium berhasil ditambahkan.');
     }
 
@@ -107,6 +112,12 @@ class AlatLabController extends Controller
 
         $alat->update($data);
 
+        activity()
+        ->causedBy(auth()->user())
+        ->performedOn($alat)
+        ->log('Mengubah data Alat Lab');
+
+
         return redirect()->route('alat.index')->with('success', 'Alat berhasil diperbarui');
     }
 
@@ -118,6 +129,12 @@ class AlatLabController extends Controller
         }
 
         $alat->delete();
+
+        activity()
+        ->causedBy(auth()->user())
+        ->performedOn($alat)
+        ->log('Menghapus data Alat Lab');
+
         return redirect()->route('alat.index')->with('success', 'Alat berhasil dihapus');
     }
 

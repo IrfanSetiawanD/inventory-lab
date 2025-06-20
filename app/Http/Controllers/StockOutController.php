@@ -86,6 +86,11 @@ class StockOutController extends Controller
             $item->save();
         }
 
+        activity()
+    ->causedBy(auth()->user())
+    ->performedOn($stockOut)
+    ->log('Menambahkan stok keluar');
+
         return redirect()->route('stock-out.index')->with('success', 'Stock Out berhasil ditambahkan.');
     }
 
@@ -107,6 +112,11 @@ class StockOutController extends Controller
         }
 
         $stockOut->delete();
+
+        activity()
+    ->causedBy(auth()->user())
+    ->performedOn($stockOut)
+    ->log('Menghapus catatan stok keluar');
 
         return redirect()->route('stock-out.index')->with('success', 'Stok Keluar successfully deleted.');
     }

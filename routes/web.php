@@ -8,6 +8,8 @@ use App\Http\Controllers\BahanKimiaController;
 use App\Http\Controllers\StockInController;
 use App\Http\Controllers\StockOutController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ActivityLogController;
+use Spatie\Activitylog\Models\Activity;
 // Tambahkan ini
 use Illuminate\Support\Facades\Route;
 
@@ -37,12 +39,25 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan', [ReportController::class, 'index'])->name('laporan')->middleware(['auth']);
     Route::get('/laporan/export-pdf', [ReportController::class, 'exportPdf'])->name('laporan.exportPdf');
 
-
-
-    // Routes untuk profil
+    Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/upload-photo', [ProfileController::class, 'uploadPhoto'])->name('profile.upload-photo');
+    Route::put('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
+    Route::put('/profile/update-email', [ProfileController::class, 'updateEmail'])->name('profile.update-email');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/profile/change-email', [ProfileController::class, 'changeEmailForm'])->name('email.change.form');
+    Route::get('/profile/change-password', [ProfileController::class, 'changePasswordForm'])->name('password.change.form');
+});
+
+    Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity.logs')->middleware(['auth']);
+    Route::get('/logs', function () {
+    $logs = Activity::with('causer')->latest()->paginate(10);
+    return view('log.index', compact('logs'));
+})->middleware('auth');
+
+
 });
 
 require __DIR__ . '/auth.php';
