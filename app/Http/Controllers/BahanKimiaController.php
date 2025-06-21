@@ -13,13 +13,16 @@ class BahanKimiaController extends Controller
     public function index(Request $request)
     {
         $query = $request->input('query');
-              
+
         $bahans = BahanKimia::with('category')
             ->when($query, fn($q) => $q->where('name', 'like', "%$query%"))
             ->paginate(10);
 
         if ($request->ajax()) {
-            return view('bahan.partials.table_rows', compact('bahans'))->render();
+            return response()->json([
+                'html' => view('bahan.partials.table_rows', compact('bahans'))->render(),
+                'pagination' => view('bahan.partials.pagination', compact('bahans'))->render()
+            ]);
         }
 
         $categories = Category::all();
