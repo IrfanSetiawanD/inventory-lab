@@ -31,11 +31,16 @@ Route::middleware('auth')->group(function () {
     Route::resource('bahan', BahanKimiaController::class)->middleware(['auth']);
     Route::get('/bahan-kimia/search', [BahanKimiaController::class, 'search'])->name('bahankimia.search');
     Route::resource('stock-in', StockInController::class)->middleware(['auth']);
+    Route::get('/stock_in/search', [StockInController::class, 'search'])->name('stock_in.search');
     Route::resource('stock-out', StockOutController::class)->middleware(['auth']);
+    Route::get('/stock_out/search', [StockInController::class, 'search'])->name('stock_out.search');
     Route::get('/laporan', [ReportController::class, 'index'])->name('laporan')->middleware(['auth']);
+    Route::get('/laporan/export-pdf', [ReportController::class, 'exportPdf'])->name('laporan.exportPdf');
 
-    // Routes untuk profil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    // profile.settings akan menampilkan form edit profil (profile.edit)
+    Route::get('/profile/settings', [ProfileController::class, 'settings'])->name('profile.settings');
+    // profile.update dan profile.destroy tetap sama, mereka memproses data dari form edit
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });

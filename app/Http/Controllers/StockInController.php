@@ -9,9 +9,32 @@ use Illuminate\Http\Request;
 
 class StockInController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $stocks = StockIn::paginate(10);
+        $query = $request->input('query');
+        $type = $request->input('type');
+        $sort = $request->input('sort', 'date'); // default sort
+        $direction = $request->input('direction', 'desc');
+
+        $stocks = StockIn::when($query, function ($q) use ($query) {
+                $q->where('item_name', 'like', "%{$query}%");
+            })
+            ->when($type, function ($q) use ($type) {
+                $model = $type === 'alat' ? 'App\Models\AlatLab' : ($type === 'bahan' ? 'App\Models\BahanKimia' : null);
+                if ($model) {
+                    $q->where('itemable_type', $model);
+                }
+            })
+            ->orderBy($sort, $direction)
+            ->paginate(10);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('stock_in.partials.table_rows', compact('stocks'))->render(),
+                'pagination' => view('stock_in.partials.pagination', compact('stocks'))->render()
+            ]);
+        }
+
         return view('stock_in.index', compact('stocks'));
     }
 
@@ -88,4 +111,34 @@ class StockInController extends Controller
         $stockIn->delete();
         return redirect()->route('stock-in.index')->with('success', 'Stok Masuk successfully deleted.');
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $type = $request->input('type');
+        $sort = $request->input('sort', 'date'); // default sort
+        $direction = $request->input('direction', 'desc');
+
+        $stocks = StockIn::when($query, function ($q) use ($query) {
+                $q->where('item_name', 'like', "%{$query}%");
+            })
+            ->when($type, function ($q) use ($type) {
+                $model = $type === 'alat' ? 'App\Models\AlatLab' : ($type === 'bahan' ? 'App\Models\BahanKimia' : null);
+                if ($model) {
+                    $q->where('itemable_type', $model);
+                }
+            })
+            ->orderBy($sort, $direction)
+            ->paginate(10);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('stock_in.partials.table_rows', compact('stocks'))->render(),
+                'pagination' => view('stock_in.partials.pagination', compact('stocks'))->render()
+            ]);
+        }
+
+        return redirect()->route('stock-in.index');
+    }
+    
 }

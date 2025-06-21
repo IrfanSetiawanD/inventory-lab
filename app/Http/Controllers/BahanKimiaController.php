@@ -10,7 +10,7 @@ use Illuminate\Validation\Rule; // Pastikan ini di-import
 
 class BahanKimiaController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
         $query = $request->input('query');
 
@@ -26,6 +26,7 @@ class BahanKimiaController extends Controller
         }
 
         $categories = Category::all();
+
         return view('bahan.index', compact('bahans', 'categories'));
     }
 
@@ -119,14 +120,16 @@ class BahanKimiaController extends Controller
         $categoryId = $request->get('category_id');
 
         $bahans = BahanKimia::with('category')
-        ->when($query, function ($q) use ($query) {
-            $q->where('name', 'like', "%$query%");
-        })
-        ->when($categoryId, function ($q) use ($categoryId) {
-            $q->where('category_id', $categoryId);
-        })
-        ->paginate(10); // tetap gunakan paginate agar link pagination muncul
+            ->when($query, function ($q) use ($query) {
+                $q->where('name', 'like', "%$query%");
+            })
+            ->when($categoryId, function ($q) use ($categoryId) {
+                $q->where('category_id', $categoryId);
+            })
+            ->orderBy('id', 'asc') // Urutkan berdasarkan ID secara menaik agar "No" konsisten
+            ->paginate(10); // Tetap gunakan paginate agar link pagination muncul
 
+        // Jika request adalah AJAX, kembalikan JSON berisi HTML untuk tabel dan pagination
         if ($request->ajax()) {
             return response()->json([
                 'html' => view('bahan.partials.table_rows', compact('bahans'))->render(),
@@ -134,7 +137,8 @@ class BahanKimiaController extends Controller
             ]);
         }
 
-        // fallback jika buka dari browser langsung
+        // Fallback jika diakses langsung dari browser tanpa AJAX (misalnya, untuk pengujian)
+        // Akan mengarahkan kembali ke method index() yang akan me-load data awal
         return redirect()->route('bahan.index');
     }
 }

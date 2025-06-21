@@ -8,71 +8,181 @@
 
 @section('content')
     <div class="container mt-4">
-        <a href="{{ route('stock-in.create') }}" class="btn btn-primary mb-3">
-            <i class="bi bi-plus-circle me-1"></i> Tambah Stok Masuk
-        </a>
         @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+            <div class="alert alert-success mt-3" role="alert">
+                {{ session('success') }}
+            </div>
         @endif
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped align-middle">
+
+        <a href="{{ route('stock-in.create') }}" class="btn btn-primary mb-3">
+            <i class="bi bi-plus-circle me-1"></i> Tambah Stock
+        </a>
+
+        <!-- Search & Filter -->
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <input type="text" id="searchInputStockIn" class="form-control" placeholder="Cari nama alat/bahan...">
+            </div>
+            <div class="col-md-4">
+                <select id="typeFilterStockIn" class="form-control">
+                    <option value="">-- Semua Tipe --</option>
+                    <option value="alat">Alat Lab</option>
+                    <option value="bahan">Bahan Kimia</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-responsive" style="position: relative;">
+            <table class="table table-bordered table-striped align-middle" style="margin-bottom: 0;">
                 <thead class="table-dark">
                     <tr>
                         <th>No</th>
-                        <th>Nama Barang</th>
-                        <th>Jenis</th>
-                        <th>Jumlah</th>
-                        <th>Tanggal</th>
+                        <th class="cursor-pointer text-left">
+                            <div class="flex items-center justify-between w-full sortable" data-sort="item_name">
+                                <span>Nama Item</span>
+                                <span class="sort-icon" data-icon-for="item_name">⇅</span>
+                            </div>
+                        </th>
+                        <th class="cursor-pointer text-left">
+                            <div class="flex items-center justify-between w-full sortable" data-sort="itemable_id">
+                                <span>Jenis</span>
+                                <span class="sort-icon" data-icon-for="itemable_id">⇅</span>
+                            </div>
+                        </th>
+                        <th class="cursor-pointer text-left">
+                            <div class="flex items-center justify-between w-full sortable" data-sort="quantity">
+                                <span>Jumlah</span>
+                                <span class="sort-icon" data-icon-for="quantity">⇅</span>
+                            </div>
+                        </th>
+                        <th class="cursor-pointer text-left">
+                            <div class="flex items-center justify-between w-full sortable" data-sort="date">
+                                <span>Tanggal</span>
+                                <span class="sort-icon" data-icon-for="date">⇅</span>
+                            </div>
+                        </th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @forelse ($stocks as $index => $stock)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $stock->item_name ?? 'N/A' }}</td>
-                            <td>
-                                @php
-                                    $itemTypeFromDb = $stock->itemable_type ?? '';
-                                    $itemTypeClean = trim(preg_replace('/[[:cntrl:]]/', '', $itemTypeFromDb));
-                                @endphp
-                                @if ($itemTypeClean === 'App\Models\AlatLab')
-                                    Alat Lab
-                                @elseif ($itemTypeClean === 'App\Models\BahanKimia')
-                                    Bahan Kimia
-                                @else
-                                    N/A (
-                                    @if ($itemTypeClean === '')
-                                        EMPTY STRING
-                                    @else
-                                        {{ $itemTypeClean }} | HEX: {{ bin2hex($itemTypeClean) }}
-                                    @endif
-                                    )
-                                @endif
-                            </td>
-                            <td>{{ $stock->quantity }}</td>
-                            <td>{{ $stock->date }}</td>
-                            <td>
-                                <form action="{{ route('stock-in.destroy', $stock->id) }}" method="POST" class="d-inline"
-                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus stok masuk ini? Aksi ini juga akan mengurangi kuantitas item di inventaris utama.')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                        <i class="bi bi-trash"></i> Hapus
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center text-muted">Belum ada data stok masuk.</td>
-                        </tr>
-                    @endforelse
+                <tbody id="stockInTableBody" style="position: relative;">
+                    @include('stock_in.partials.table_rows', ['stocks' => $stocks])
                 </tbody>
             </table>
-        </div>
-        <div class="mt-3">
-            {{ $stocks->links() }}
+
+            <div id="loadingStockIn" style="display: none;">
+                <div class="text-center">
+                    <img src="{{ asset('images/loading.gif') }}" alt="Loading..." width="50">
+                    <p style="color: black;">Memuat data...</p>
+                </div>
+            </div>
+
+            <div id="paginationStockIn" class="mt-3">
+                @include('stock_in.partials.pagination')
+            </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        let sort = 'date';      // default sort
+        let direction = 'desc'; // default direction
+        let timer;
+
+        function updateSortIcons() {
+            $('.sort-icon').html('⇅'); // reset semua
+
+            const activeIcon = $(`.sort-icon[data-icon-for="${sort}"]`);
+            activeIcon.html(direction === 'asc' ? '▲' : '▼');
+        }
+
+        $(document).ready(function () {
+            function fetchData(url = "{{ route('stock_in.search') }}") {
+                const query = $('#searchInputStockIn').val();
+                let type = $('#typeFilterStockIn').val();
+
+                clearTimeout(timer);
+
+                if (query.length >= 2 || query.length === 0) {
+                    timer = setTimeout(function () {
+                        $('#loadingStockIn').show();
+
+                        $.ajax({
+                            url: url,
+                            method: 'GET',
+                            data: {
+                                query: query,
+                                type: type,
+                                sort: sort,
+                                direction: direction
+                            },
+                            success: function (response) {
+                                $('#stockInTableBody').html(response.html);
+                                $('#paginationStockIn').html(response.pagination);
+                                $('#loadingStockIn').hide();
+                                updateSortIcons();
+                            },
+                            error: function () {
+                                $('#loadingStockIn').hide();
+                                alert('Gagal memuat data.');
+                            }
+                        });
+                    }, 300);
+                } else {
+                    $('#stockInTableBody').html('<tr><td colspan="8">Ketik minimal 2 huruf...</td></tr>');
+                    $('#paginationStockIn').empty();
+                }
+            }
+
+            $('#searchInputStockIn').on('keyup', function () {
+                fetchData();
+            });
+
+            $('#typeFilterStockIn').on('change', function () {
+                fetchData();
+            });
+
+            // Delegasi klik pagination agar tetap bisa bekerja setelah replace HTML
+            $(document).on('click', '.pagination a', function (e) {
+                e.preventDefault();
+                let url = $(this).attr('href');
+                if (url) {
+                    fetchData(url);
+                }
+            });
+
+            $(document).on('click', '.sortable', function (e) {
+                e.preventDefault();
+                let clickedSort = $(this).data('sort');
+
+                if (sort === clickedSort) {
+                    // toggle direction
+                    direction = (direction === 'asc') ? 'desc' : 'asc';
+                } else {
+                    sort = clickedSort;
+                    direction = 'desc'; // default to asc on new sort
+                }
+
+                fetchData();
+            });
+        });
+    </script>
+    <style>
+        #loadingStockIn {
+            position: absolute;
+            top: 42px; /* Tinggi thead */
+            left: 0;
+            right: 0;
+            bottom: 60px; /* ruang untuk pagination */
+            background: rgba(255, 255, 255, 0.6);
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        #stockInTableBody.blur {
+            filter: blur(3px);
+        }
+    </style>
 @endsection

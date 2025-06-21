@@ -8,14 +8,32 @@
 
 @section('content')
     <div class="container mt-4">
-        <a href="{{ route('stock-out.create') }}" class="btn btn-primary mb-3">
-            <i class="bi bi-plus-circle me-1"></i> Tambah Stok Keluar
-        </a>
         @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+            <div class="alert alert-success mt-3" role="alert">
+                {{ session('success') }}
+            </div>
         @endif
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped align-middle">
+
+        <a href="{{ route('stock-out.create') }}" class="btn btn-primary mb-3">
+            <i class="bi bi-plus-circle me-1"></i> Tambah Stock
+        </a>
+
+        <!-- Search & Filter -->
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <input type="text" id="searchInputStockOut" class="form-control" placeholder="Cari nama alat/bahan...">
+            </div>
+            <div class="col-md-4">
+                <select id="typeFilterStockOut" class="form-control">
+                    <option value="">-- Semua Tipe --</option>
+                    <option value="alat">Alat Lab</option>
+                    <option value="bahan">Bahan Kimia</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-responsive" style="position: relative;">
+            <table class="table table-bordered table-striped align-middle" style="margin-bottom: 0;">
                 <thead class="table-dark">
                     <tr>
                         <th>No</th>
@@ -26,53 +44,98 @@
                         <th>Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @forelse ($stocks as $index => $stock)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $stock->item_name ?? 'N/A' }}</td>
-                            <td>
-                                @php
-                                    $itemTypeFromDb = $stock->itemable_type ?? '';
-                                    $itemTypeClean = trim(preg_replace('/[[:cntrl:]]/', '', $itemTypeFromDb));
-                                @endphp
-                                @if ($itemTypeClean === 'App\Models\AlatLab')
-                                    Alat Lab
-                                @elseif ($itemTypeClean === 'App\Models\BahanKimia')
-                                    Bahan Kimia
-                                @else
-                                    N/A (
-                                    @if ($itemTypeClean === '')
-                                        EMPTY STRING
-                                    @else
-                                        {{ $itemTypeClean }} | HEX: {{ bin2hex($itemTypeClean) }}
-                                    @endif
-                                    )
-                                @endif
-                            </td>
-                            <td>{{ $stock->quantity }}</td>
-                            <td>{{ $stock->date }}</td>
-                            <td>
-                                <form action="{{ route('stock-out.destroy', $stock->id) }}" method="POST" class="d-inline"
-                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus stok keluar ini? Aksi ini juga akan menambah kuantitas item di inventaris utama.')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                        <i class="bi bi-trash"></i> Hapus
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center text-muted">Belum ada data stok keluar.</td>
-                        </tr>
-                    @endforelse
+                <tbody id="stockOutTableBody" style="position: relative;">
+                    @include('stock_out.partials.table_rows', ['stocks' => $stocks])
                 </tbody>
             </table>
-        </div>
-        <div class="mt-3">
-            {{ $stocks->links() }}
+
+            <div id="loadingStockOut" style="display: none;">
+                <div class="text-center">
+                    <img src="{{ asset('images/loading.gif') }}" alt="Loading..." width="50">
+                    <p style="color: black;">Memuat data...</p>
+                </div>
+            </div>
+
+            <div id="paginationStockOut" class="mt-3">
+                @include('stock_out.partials.pagination')
+            </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        let timer;
+
+        $(document).ready(function () {
+            function fetchData(url = "{{ route('stock_out.search') }}") {
+                const query = $('#searchInputStockOut').val();
+                let type = $('#typeFilterStockOut').val();
+
+                clearTimeout(timer);
+
+                if (query.length >= 2 || query.length === 0) {
+                    timer = setTimeout(function () {
+                        $('#loadingStockOut').show();
+
+                        $.ajax({
+                            url: url,
+                            method: 'GET',
+                            data: {
+                                query: query,
+                                type: type
+                            },
+                            success: function (response) {
+                                $('#stockOutTableBody').html(response.html);
+                                $('#paginationStockOut').html(response.pagination);
+                                $('#loadingStockOut').hide();
+                            },
+                            error: function () {
+                                $('#loadingStockOut').hide();
+                                alert('Gagal memuat data.');
+                            }
+                        });
+                    }, 300);
+                } else {
+                    $('#stockOutTableBody').html('<tr><td colspan="8">Ketik minimal 2 huruf...</td></tr>');
+                    $('#paginationStockOut').empty();
+                }
+            }
+
+            $('#searchInputStockOut').on('keyup', function () {
+                fetchData();
+            });
+
+            $('#typeFilterStockOut').on('change', function () {
+                fetchData();
+            });
+
+            // Delegasi klik pagination agar tetap bisa bekerja setelah replace HTML
+            $(document).on('click', '.pagination a', function (e) {
+                e.preventDefault();
+                let url = $(this).attr('href');
+                if (url) {
+                    fetchData(url);
+                }
+            });
+        });
+    </script>
+    <style>
+        #loadingStockOut {
+            position: absolute;
+            top: 42px; /* Tinggi thead */
+            left: 0;
+            right: 0;
+            bottom: 60px; /* ruang untuk pagination */
+            background: rgba(255, 255, 255, 0.6);
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        #stockOutTableBody.blur {
+            filter: blur(3px);
+        }
+    </style>
 @endsection

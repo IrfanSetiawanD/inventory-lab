@@ -71,14 +71,14 @@
     <script>
         let timer;
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             function fetchData(url = "{{ route('bahankimia.search') }}") {
                 const query = $('#searchInput').val();
                 const categoryId = $('#categoryFilter').val();
 
                 clearTimeout(timer);
 
-                if (query.length >= 4 || query.length === 0) {
+                if (query.length >= 2 || query.length === 0) {
                     timer = setTimeout(function () {
                         $('#loading').show();
 
@@ -94,26 +94,27 @@
                                     .hide()
                                     .html(response.html)
                                     .fadeIn(300);
+
                                 $('#pagination').html(response.pagination);
                                 $('#loading').hide();
                             },
-                            error: function () {
+                            error: function() {
                                 $('#loading').hide();
                                 alert('Gagal memuat data.');
                             }
                         });
                     }, 300);
                 } else {
-                    $('#bahanKimiaTableBody').html('<tr><td colspan="9">Ketik minimal 4 huruf...</td></tr>');
+                    $('#bahanKimiaTableBody').html('<tr><td colspan="9">Ketik minimal 2 huruf...</td></tr>');
                     $('#pagination').empty();
                 }
             }
 
-            $('#searchInput').on('keyup', function () {
+            $('#searchInput').on('keyup', function() {
                 fetchData();
             });
 
-            $('#categoryFilter').on('change', function () {
+            $('#categoryFilter').on('change', function() {
                 fetchData();
             });
 
@@ -172,6 +173,22 @@
 
         #bahanKimiaTableBody tr {
             transition: all 0.3s ease-in-out;
+        }
+
+        #loading {
+            position: absolute;
+            top: 42px;
+            /* Tinggi thead */
+            left: 0;
+            right: 0;
+            bottom: 60px;
+            /* ruang untuk pagination */
+            background: rgba(255, 255, 255, 0.6);
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
         }
 
         #bahanKimiaTableBody.blur {

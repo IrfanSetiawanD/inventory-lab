@@ -7,6 +7,8 @@ use App\Models\BahanKimia;
 use App\Models\StockIn;
 use App\Models\StockOut;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class ReportController extends Controller
 {
@@ -34,12 +36,28 @@ class ReportController extends Controller
         // Mengambil semua stok keluar. Asumsi StockOut juga memiliki item_name, itemable_type, itemable_id.
         $stockOuts = StockOut::all();
 
-        // Mengirimkan semua data ke view
         return view('laporan.index', compact(
             'alatLabs',
             'bahanKimias',
             'stockIns',
             'stockOuts'
         ));
+    }
+
+    public function exportPdf()
+    {
+        $alatLabs = AlatLab::with('category')->get();
+        $bahanKimias = BahanKimia::with('category')->get();
+        $stockIns = StockIn::all();
+        $stockOuts = StockOut::all();
+
+        $pdf = Pdf::loadView('laporan.pdf', compact(
+            'alatLabs',
+            'bahanKimias',
+            'stockIns',
+            'stockOuts'
+        ))->setPaper('a4', 'portrait');
+
+        return $pdf->stream('laporan-inventaris.pdf'); // atau ->download() jika mau langsung unduh
     }
 }
