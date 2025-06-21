@@ -13,7 +13,7 @@ class BahanKimiaController extends Controller
     public function index(Request $request)
     {
         $query = $request->input('query');
-
+              
         $bahans = BahanKimia::with('category')
             ->when($query, fn($q) => $q->where('name', 'like', "%$query%"))
             ->paginate(10);
