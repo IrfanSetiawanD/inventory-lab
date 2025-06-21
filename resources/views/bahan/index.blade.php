@@ -175,22 +175,6 @@
             transition: all 0.3s ease-in-out;
         }
 
-        #loading {
-            position: absolute;
-            top: 42px;
-            /* Tinggi thead */
-            left: 0;
-            right: 0;
-            bottom: 60px;
-            /* ruang untuk pagination */
-            background: rgba(255, 255, 255, 0.6);
-            z-index: 5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pointer-events: none;
-        }
-
         #bahanKimiaTableBody.blur {
             filter: blur(3px);
         }
