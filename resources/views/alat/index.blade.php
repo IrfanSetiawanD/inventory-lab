@@ -7,11 +7,30 @@
 @endsection
 
 @section('content')
-    <div class="container mt-4">
         @if (session('success'))
-            <div class="alert alert-success mt-3" role="alert">
+            <div id="alert-success" class="alert alert-success mt-3 alert-animate" role="alert">
                 {{ session('success') }}
             </div>
+
+            <style>
+                .alert-animate {
+                    transition: transform 0.4s ease, opacity 0.4s ease;
+                }
+
+                .alert-hidden {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+            </style>
+
+            <script>
+                const alertBox = document.getElementById('alert-success');
+
+                setTimeout(() => {
+                    alertBox.classList.add('alert-hidden');
+                    setTimeout(() => alertBox.remove(), 500); // setelah transisi selesai
+                }, 4000);
+            </script>
         @endif
 
         <a href="{{ route('alat.create') }}" class="btn btn-primary mb-3">
@@ -21,7 +40,7 @@
         <!-- Search & Filter -->
         <div class="row mb-3">
             <div class="col-md-4">
-                <input type="text" id="searchInput" class="form-control" placeholder="Cari nama alat...">
+                <input type="text" id="searchInput" class="form-control" placeholder="Cari Nama Alat...">
             </div>
             <div class="col-md-4">
                 <select id="categoryFilter" class="form-control">
@@ -34,8 +53,8 @@
         </div>
 
         <div class="table-responsive" style="position: relative;">
-            <table class="table table-bordered table-striped align-middle" style="margin-bottom: 0;">
-                <thead class="table-dark">
+            <table class="table table-bordered table-striped align-middle mb-0">
+                <thead class="table-dark text-center align-middle">
                     <tr>
                         <th>No</th>
                         <th>Nama Alat</th>
@@ -47,7 +66,7 @@
                         <th>Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="alatLabTableBody" style="position: relative;">
+                <tbody id="alatLabTableBody">
                     @include('alat.partials.table_rows', ['alats' => $alats])
                 </tbody>
             </table>
@@ -56,7 +75,7 @@
             <div id="loading" style="display: none;">
                 <div class="text-center">
                     <img src="{{ asset('images/loading.gif') }}" alt="Loading..." width="50">
-                    <p style="color: black;">Memuat data...</p>
+                    <p style="color: black;">Memuat Data...</p>
                 </div>
             </div>
         
@@ -64,7 +83,6 @@
                 @include('alat.partials.pagination')
             </div>
         </div>
-    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -90,19 +108,22 @@
                                 category_id: categoryId
                             },
                             success: function (response) {
-                                $('#alatLabTableBody').html(response.html);
+                                $('#alatLabTableBody')
+                                    .hide()
+                                    .html(response.html)
+                                    .fadeIn(300);
+
                                 $('#pagination').html(response.pagination);
                                 $('#loading').hide();
-                                // $('#alatLabTableBody').show();
                             },
                             error: function () {
                                 $('#loading').hide();
-                                alert('Gagal memuat data.');
+                                alert('Gagal Memuat Data.');
                             }
                         });
                     }, 300);
                 } else {
-                    $('#alatLabTableBody').html('<tr><td colspan="8">Ketik minimal 2 huruf...</td></tr>');
+                    $('#alatLabTableBody').html('<tr><td colspan="8">Ketik Minimal 2 Huruf...</td></tr>');
                     $('#pagination').empty();
                 }
             }
@@ -126,18 +147,52 @@
         });
     </script>
     <style>
-        #loading {
-            position: absolute;
-            top: 42px; /* Tinggi thead */
-            left: 0;
-            right: 0;
-            bottom: 60px; /* ruang untuk pagination */
-            background: rgba(255, 255, 255, 0.6);
-            z-index: 5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pointer-events: none;
+        .table-bordered td,
+        .table-bordered th {
+            border: 1px solid #547792 !important;
+        }
+
+        thead.table-dark th {
+            background-color: #1e3a8a !important;
+            color: #fff;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9fafb;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e0f7ff;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        td {
+            vertical-align: middle !important;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .btn-sm {
+            padding: 6px 10px;
+            border-radius: 6px;
+        }
+
+        td img {
+            max-width: 70px;
+            border-radius: 6px;
+        }
+
+        .table {
+            border-collapse: collapse;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        #alatLabTableBody tr {
+            transition: all 0.3s ease-in-out;
         }
 
         #alatLabTableBody.blur {

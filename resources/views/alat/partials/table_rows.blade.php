@@ -18,7 +18,7 @@
                 <i class="bi bi-pencil"></i>
             </a>
 
-            <form action="{{ route('alat.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+            <form action="{{ route('alat.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin Ingin Menghapus Data Ini?')">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-sm btn-danger">
@@ -29,6 +29,6 @@
     </tr>
 @empty
     <tr>
-        <td colspan="8" class="text-center text-muted">Belum ada data alat laboratorium.</td>
+        <td colspan="8" class="text-center text-muted">Belum Ada Data Alat Laboratorium.</td>
     </tr>
 @endforelse

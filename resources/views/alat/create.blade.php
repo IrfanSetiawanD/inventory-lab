@@ -12,7 +12,7 @@
             <div class="card-body">
                 @if ($errors->any())
                     <div class="alert alert-danger">
-                        <strong>Terjadi kesalahan:</strong>
+                        <strong>Terjadi Kesalahan:</strong>
                         <ul class="mb-0">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
@@ -39,12 +39,12 @@
                         <label for="category_id" class="form-label">Kategori</label>
                         @if ($categories->isEmpty())
                             <div class="alert alert-warning" role="alert">
-                                Peringatan: Belum ada kategori untuk Alat Lab. Silakan
-                                <a href="{{ route('categories.create') }}" class="alert-link">buat kategori baru di sini</a>
-                                sebelum menambahkan alat.
+                                Peringatan: Belum Ada Kategori Untuk Alat Lab. Silakan
+                                <a href="{{ route('categories.create') }}" class="alert-link">Buat Kategori Baru Di Sini</a>
+                                Sebelum Menambahkan Alat.
                             </div>
                             <select class="form-select" id="category_id" name="category_id" disabled>
-                                <option value="">-- Belum ada Kategori --</option>
+                                <option value="">-- Belum Ada Kategori --</option>
                             </select>
                         @else
                             <select class="form-select @error('category_id') is-invalid @enderror" id="category_id"
@@ -81,7 +81,7 @@
                         <label for="unit" class="form-label">Satuan</label>
                         <input type="text" name="unit" id="unit"
                             class="form-control @error('unit') is-invalid @enderror" value="{{ old('unit') }}"
-                            placeholder="Contoh: buah, set, pcs" required>
+                            placeholder="Contoh: Buah, Set, Pcs" required>
                         @error('unit')
                             <div class="invalid-feedback">
                                 {{ $message }}
