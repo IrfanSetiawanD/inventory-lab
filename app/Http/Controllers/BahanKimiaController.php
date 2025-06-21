@@ -10,7 +10,7 @@ use Illuminate\Validation\Rule; // Pastikan ini di-import
 
 class BahanKimiaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $query = $request->input('query');
 
