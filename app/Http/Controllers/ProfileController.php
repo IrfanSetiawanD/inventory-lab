@@ -40,42 +40,23 @@ class ProfileController extends Controller
      * Memperbarui informasi profil pengguna.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        // Pastikan Anda memanggil ProfileUpdateRequest jika Anda menggunakannya.
-        // Jika tidak, Anda bisa menggunakan $request->validate() langsung di sini.
-        // Validasi tambahan untuk tanggal_lahir
-        $request->validate([
-            'tanggal_lahir' => 'nullable|date|before_or_equal:today', // Tanggal lahir tidak boleh di masa depan
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'bio' => 'nullable|string',
+        'location' => 'nullable|string|max:255',
+        'tanggal_lahir' => 'nullable|date',
+        'no_telp' => 'nullable|string|max:20',
+    ]);
 
-        $user = $request->user();
+    $user = Auth::user();
+    $user->update($request->only([
+        'name', 'email', 'bio', 'location', 'tanggal_lahir', 'no_telp',
+    ]));
 
-        // Mengisi data user dari request yang sudah divalidasi
-        $user->fill($request->validated());
-
-        // Update tanggal_lahir secara terpisah karena mungkin tidak ada di ProfileUpdateRequest default
-        // Ini akan memastikan jika input kosong dikirim, itu akan diatur menjadi null.
-        if ($request->has('tanggal_lahir')) {
-            $user->tanggal_lahir = $request->tanggal_lahir;
-        } else {
-            // Jika tanggal_lahir tidak disertakan dalam request (misalnya, input tanggal lahir disembunyikan/tidak diisi)
-            // atau jika nilai yang dikirim adalah string kosong, set menjadi null di database.
-            if ($request->input('tanggal_lahir') === null || $request->input('tanggal_lahir') === '') {
-                $user->tanggal_lahir = null; // Set null jika input kosong
-            }
-        }
-
-        // Jika email berubah, set email_verified_at menjadi null (membutuhkan verifikasi ulang)
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
-
-        // Simpan perubahan ke database
-        $user->save();
-
-        // Redirect kembali ke halaman indeks profil dengan status success
-        return Redirect::route('profile.edit')->with('status', 'profile-updated'); // Kembali ke halaman indeks profil (profile.show)
-    }
+    return redirect()->route('profile.edit')->with('status', 'profile-updated');
+}
 
     /**
      * Delete the user's account.

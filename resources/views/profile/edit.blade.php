@@ -96,6 +96,39 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            {{-- Input untuk Bio --}}
+<div class="mb-3">
+    <label for="bio" class="form-label">Bio</label>
+    <textarea id="bio" name="bio"
+        class="form-control @error('bio') is-invalid @enderror"
+        rows="3">{{ old('bio', $user->bio) }}</textarea>
+    @error('bio')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
+{{-- Input untuk Lokasi --}}
+<div class="mb-3">
+    <label for="location" class="form-label">Lokasi</label>
+    <input id="location" name="location" type="text"
+        class="form-control @error('location') is-invalid @enderror"
+        value="{{ old('location', $user->location) }}">
+    @error('location')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
+{{-- Input untuk No. Telepon --}}
+<div class="mb-3">
+    <label for="no_telp" class="form-label">No. Telepon</label>
+    <input id="no_telp" name="no_telp" type="text"
+        class="form-control @error('no_telp') is-invalid @enderror"
+        value="{{ old('no_telp', $user->no_telp) }}">
+    @error('no_telp')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
 
 
                             <div class="d-flex justify-content-end">
