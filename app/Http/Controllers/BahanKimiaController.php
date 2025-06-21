@@ -12,9 +12,21 @@ class BahanKimiaController extends Controller
 {
     public function index()
     {
-        // Pastikan variabel yang dikirim ke view adalah 'bahans' untuk konsistensi
-        $bahans = BahanKimia::with('category')->orderBy('id', 'asc')->paginate(10);
-        $categories = Category::where('type', 'Bahan Kimia')->get();
+        $query = $request->input('query');
+
+        $bahans = BahanKimia::with('category')
+            ->when($query, fn($q) => $q->where('name', 'like', "%$query%"))
+            ->paginate(10);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('bahan.partials.table_rows', compact('bahans'))->render(),
+                'pagination' => view('bahan.partials.pagination', compact('bahans'))->render()
+            ]);
+        }
+
+        $categories = Category::all();
+
         return view('bahan.index', compact('bahans', 'categories'));
     }
 
