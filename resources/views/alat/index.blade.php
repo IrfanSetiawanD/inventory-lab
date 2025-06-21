@@ -35,7 +35,7 @@
 
         <div class="table-responsive" style="position: relative;">
             <table class="table table-bordered table-striped align-middle" style="margin-bottom: 0;">
-                <thead class="table-dark">
+                <thead class="table-dark text-center align-middle">
                     <tr>
                         <th>No</th>
                         <th>Nama Alat</th>
@@ -56,7 +56,7 @@
             <div id="loading" style="display: none;">
                 <div class="text-center">
                     <img src="{{ asset('images/loading.gif') }}" alt="Loading..." width="50">
-                    <p style="color: black;">Memuat data...</p>
+                    <p style="color: black;">Memuat Data...</p>
                 </div>
             </div>
         
@@ -97,12 +97,12 @@
                             },
                             error: function () {
                                 $('#loading').hide();
-                                alert('Gagal memuat data.');
+                                alert('Gagal Memuat Data.');
                             }
                         });
                     }, 300);
                 } else {
-                    $('#alatLabTableBody').html('<tr><td colspan="8">Ketik minimal 2 huruf...</td></tr>');
+                    $('#alatLabTableBody').html('<tr><td colspan="8">Ketik Minimal 2 Huruf...</td></tr>');
                     $('#pagination').empty();
                 }
             }

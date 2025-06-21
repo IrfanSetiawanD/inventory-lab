@@ -9,16 +9,6 @@ use Illuminate\Support\Facades\Storage; // Pastikan ini di-import!
 
 class AlatLabController extends Controller
 {
-    // public function index()
-    // {
-    //     $alats = AlatLab::with('category')->paginate(10);
-    //     $categories = Category::all();
-    //     return view('alat.index', compact(
-    //         'alats',
-    //         'categories'
-    //     ));
-    // }
-
     public function index(Request $request)
     {
         $query = $request->input('query');
@@ -55,10 +45,8 @@ class AlatLabController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $imagePath = null; // Default value if no image is uploaded
+        $imagePath = null;
         if ($request->hasFile('image')) {
-            // Store the image in 'alat_images' directory within the 'public' disk
-            // This will return the relative path, e.g., 'alat_images/some_unique_name.jpg'
             $imagePath = $request->file('image')->store('alat_images', 'public');
         }
 
@@ -72,7 +60,7 @@ class AlatLabController extends Controller
             'image' => $imagePath, // Store the path returned by Storage::putFile (or store())
         ]);
 
-        return redirect()->route('alat.index')->with('success', 'Alat Laboratorium berhasil ditambahkan.');
+        return redirect()->route('alat.index')->with('success', 'Alat Laboratorium Berhasil Ditambahkan.');
     }
 
     public function edit(AlatLab $alat)
@@ -107,7 +95,7 @@ class AlatLabController extends Controller
 
         $alat->update($data);
 
-        return redirect()->route('alat.index')->with('success', 'Alat berhasil diperbarui');
+        return redirect()->route('alat.index')->with('success', 'Alat Berhasil Diperbarui');
     }
 
     public function destroy(AlatLab $alat)
@@ -118,23 +106,8 @@ class AlatLabController extends Controller
         }
 
         $alat->delete();
-        return redirect()->route('alat.index')->with('success', 'Alat berhasil dihapus');
+        return redirect()->route('alat.index')->with('success', 'Alat Berhasil Dihapus');
     }
-
-    // public function search(Request $request)
-    // {
-    //     $query = $request->get('query');
-
-    //     $alatLabs = [];
-
-    //     if ($query && strlen($query) >= 4) {
-    //         $alatLabs = AlatLab::with('category')
-    //             ->searchByName($query)
-    //             ->get();
-    //     }
-
-    //     return response()->json($alatLabs);
-    // }
 
     public function search(Request $request)
     {
