@@ -5,41 +5,149 @@
     <meta charset="utf-8">
     <title>Laporan Inventaris</title>
     <style>
-        /* Gaya dasar saja untuk pengujian */
         body {
             font-family: sans-serif;
             font-size: 10pt;
             margin: 1cm;
+            color: #333;
+            /* Warna teks umum untuk PDF agar lebih jelas */
         }
 
         h2 {
             text-align: center;
             margin-bottom: 20px;
+            color: #1e3a8a;
+            /* Warna judul yang konsisten */
+            font-size: 18pt;
+            /* Ukuran judul */
         }
 
         .section-title {
             font-weight: bold;
             margin-top: 25px;
+            margin-bottom: 10px;
+            /* Sedikit spasi di bawah judul bagian */
             font-size: 12pt;
+            color: #1e3a8a;
+            /* Warna judul bagian yang konsisten */
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+            /* Gaya tabel umum */
+            /* border-radius: 8px; /* Dihapus untuk mencegah garis hilang di sudut */
+            /* overflow: hidden; /* Dihapus karena terkait dengan border-radius */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            /* Mungkin tidak dirender, tetapi tidak menyebabkan garis hilang */
+            table-layout: fixed;
+            /* Penting: Membuat lebar kolom fixed */
         }
 
         th,
         td {
-            border: 1px solid #000;
-            padding: 6px;
-            text-align: left;
-            vertical-align: top;
+            border: 1px solid #547792;
+            /* Border seperti tampilan web */
+            padding: 8px;
+            /* Padding sedikit lebih besar */
+            vertical-align: middle;
+            /* Selalu tengah secara vertikal */
+            font-size: 10pt;
+            text-align: center;
+            /* Semua sel data dan header rata tengah */
         }
 
         thead {
-            background-color: #eee;
+            background-color: #1e3a8a;
+            /* Warna header gelap seperti web */
+            color: #fff;
+            font-weight: 600;
         }
+
+        /* Gaya untuk baris selang-seling */
+        tbody tr:nth-child(odd) {
+            background-color: #f9fafb;
+            /* Warna striping tabel */
+        }
+
+        /* Gaya untuk gambar (jika ada di laporan PDF) */
+        td img {
+            max-width: 70px;
+            border-radius: 6px;
+        }
+
+        /* Jika ada baris kosong */
+        td[colspan][align="center"] {
+            font-style: italic;
+            color: #6c757d;
+        }
+
+        /* Lebar Kolom Spesifik untuk Laporan Alat Lab & Bahan Kimia */
+        /* (No, Nama, Kategori, Jumlah, Satuan) */
+        .table-alat-bahan th:nth-child(1),
+        .table-alat-bahan td:nth-child(1) {
+            width: 8%;
+        }
+
+        /* No */
+        .table-alat-bahan th:nth-child(2),
+        .table-alat-bahan td:nth-child(2) {
+            width: 35%;
+        }
+
+        /* Nama */
+        .table-alat-bahan th:nth-child(3),
+        .table-alat-bahan td:nth-child(3) {
+            width: 20%;
+        }
+
+        /* Kategori */
+        .table-alat-bahan th:nth-child(4),
+        .table-alat-bahan td:nth-child(4) {
+            width: 12%;
+        }
+
+        /* Jumlah */
+        .table-alat-bahan th:nth-child(5),
+        .table-alat-bahan td:nth-child(5) {
+            width: 25%;
+        }
+
+        /* Satuan */
+
+        /* Lebar Kolom Spesifik untuk Laporan Stok Masuk & Keluar */
+        /* (No, Nama, Jenis, Jumlah, Tanggal) */
+        .table-stock th:nth-child(1),
+        .table-stock td:nth-child(1) {
+            width: 8%;
+        }
+
+        /* No */
+        .table-stock th:nth-child(2),
+        .table-stock td:nth-child(2) {
+            width: 35%;
+        }
+
+        /* Nama */
+        .table-stock th:nth-child(3),
+        .table-stock td:nth-child(3) {
+            width: 20%;
+        }
+
+        /* Jenis */
+        .table-stock th:nth-child(4),
+        .table-stock td:nth-child(4) {
+            width: 12%;
+        }
+
+        /* Jumlah */
+        .table-stock th:nth-child(5),
+        .table-stock td:nth-child(5) {
+            width: 25%;
+        }
+
+        /* Tanggal */
     </style>
 </head>
 
@@ -49,7 +157,7 @@
 
     {{-- Alat Lab --}}
     <div class="section-title">1. Laporan Alat Lab</div>
-    <table>
+    <table class="table-alat-bahan"> {{-- Menambahkan kelas untuk lebar kolom --}}
         <thead>
             <tr>
                 <th>No</th>
@@ -78,7 +186,7 @@
 
     {{-- Bahan Kimia --}}
     <div class="section-title">2. Laporan Bahan Kimia</div>
-    <table>
+    <table class="table-alat-bahan"> {{-- Menambahkan kelas untuk lebar kolom --}}
         <thead>
             <tr>
                 <th>No</th>
@@ -107,7 +215,7 @@
 
     {{-- Stok Masuk --}}
     <div class="section-title">3. Laporan Stok Masuk</div>
-    <table>
+    <table class="table-stock"> {{-- Menambahkan kelas untuk lebar kolom --}}
         <thead>
             <tr>
                 <th>No</th>
@@ -147,7 +255,7 @@
 
     {{-- Stok Keluar --}}
     <div class="section-title">4. Laporan Stok Keluar</div>
-    <table>
+    <table class="table-stock"> {{-- Menambahkan kelas untuk lebar kolom --}}
         <thead>
             <tr>
                 <th>No</th>
