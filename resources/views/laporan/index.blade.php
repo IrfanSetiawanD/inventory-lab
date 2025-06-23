@@ -181,8 +181,49 @@
             </div>
         </div>
     </div>
-    {{-- Hapus semua @media print CSS dari sini --}}
     <style>
+        .table-bordered td,
+        .table-bordered th {
+            border: 1px solid #547792 !important;
+        }
+
+        thead.table-dark th {
+            background-color: #1e3a8a !important;
+            color: #fff;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9fafb;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e0f7ff;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        td {
+            vertical-align: middle !important;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .btn-sm {
+            padding: 6px 10px;
+            border-radius: 6px;
+        }
+
+        .table {
+            border-collapse: collapse;
+            border-radius: 12px;
+            /* Diterapkan pada keseluruhan tabel */
+            overflow: hidden;
+            /* Penting untuk border-radius pada tabel responsif */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Gaya kolom spesifik yang sudah ada di laporan-index, tetap dipertahankan */
         .table {
             table-layout: fixed;
             width: 100%;
@@ -208,17 +249,11 @@
         .table th:nth-child(4),
         .table td:nth-child(4) {
             width: 15%;
-            text-align: right;
         }
 
         .table th:nth-child(5),
         .table td:nth-child(5) {
             width: 24%;
-        }
-
-        .table td,
-        .table th {
-            vertical-align: middle;
         }
     </style>
 @endsection
