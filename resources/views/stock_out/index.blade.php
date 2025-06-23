@@ -37,10 +37,30 @@
                 <thead class="table-dark">
                     <tr>
                         <th>No</th>
-                        <th>Nama Barang</th>
-                        <th>Jenis</th>
-                        <th>Jumlah</th>
-                        <th>Tanggal</th>
+                        <th class="cursor-pointer text-left">
+                            <div class="flex items-center justify-between w-full sortable" data-sort="item_name">
+                                <span>Nama Item</span>
+                                <span class="sort-icon" data-icon-for="item_name">⇅</span>
+                            </div>
+                        </th>
+                        <th class="cursor-pointer text-left">
+                            <div class="flex items-center justify-between w-full sortable" data-sort="itemable_id">
+                                <span>Jenis</span>
+                                <span class="sort-icon" data-icon-for="itemable_id">⇅</span>
+                            </div>
+                        </th>
+                        <th class="cursor-pointer text-left">
+                            <div class="flex items-center justify-between w-full sortable" data-sort="quantity">
+                                <span>Jumlah</span>
+                                <span class="sort-icon" data-icon-for="quantity">⇅</span>
+                            </div>
+                        </th>
+                        <th class="cursor-pointer text-left">
+                            <div class="flex items-center justify-between w-full sortable" data-sort="date">
+                                <span>Tanggal</span>
+                                <span class="sort-icon" data-icon-for="date">⇅</span>
+                            </div>
+                        </th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -64,9 +84,18 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        let sort = 'date'; // default sort
+        let direction = 'desc'; // default direction
         let timer;
 
-        $(document).ready(function () {
+        function updateSortIcons() {
+            $('.sort-icon').html('⇅'); // reset semua
+
+            const activeIcon = $(`.sort-icon[data-icon-for="${sort}"]`);
+            activeIcon.html(direction === 'asc' ? '▲' : '▼');
+        }
+
+        $(document).ready(function() {
             function fetchData(url = "{{ route('stock_out.search') }}") {
                 const query = $('#searchInputStockOut').val();
                 let type = $('#typeFilterStockOut').val();
@@ -74,7 +103,7 @@
                 clearTimeout(timer);
 
                 if (query.length >= 2 || query.length === 0) {
-                    timer = setTimeout(function () {
+                    timer = setTimeout(function() {
                         $('#loadingStockOut').show();
 
                         $.ajax({
@@ -82,14 +111,17 @@
                             method: 'GET',
                             data: {
                                 query: query,
-                                type: type
+                                type: type,
+                                sort: sort,
+                                direction: direction
                             },
-                            success: function (response) {
+                            success: function(response) {
                                 $('#stockOutTableBody').html(response.html);
                                 $('#paginationStockOut').html(response.pagination);
                                 $('#loadingStockOut').hide();
+                                updateSortIcons();
                             },
-                            error: function () {
+                            error: function() {
                                 $('#loadingStockOut').hide();
                                 alert('Gagal memuat data.');
                             }
@@ -101,31 +133,48 @@
                 }
             }
 
-            $('#searchInputStockOut').on('keyup', function () {
+            $('#searchInputStockOut').on('keyup', function() {
                 fetchData();
             });
 
-            $('#typeFilterStockOut').on('change', function () {
+            $('#typeFilterStockOut').on('change', function() {
                 fetchData();
             });
 
             // Delegasi klik pagination agar tetap bisa bekerja setelah replace HTML
-            $(document).on('click', '.pagination a', function (e) {
+            $(document).on('click', '.pagination a', function(e) {
                 e.preventDefault();
                 let url = $(this).attr('href');
                 if (url) {
                     fetchData(url);
                 }
             });
+
+            $(document).on('click', '.sortable', function(e) {
+                e.preventDefault();
+                let clickedSort = $(this).data('sort');
+
+                if (sort === clickedSort) {
+                    // toggle direction
+                    direction = (direction === 'asc') ? 'desc' : 'asc';
+                } else {
+                    sort = clickedSort;
+                    direction = 'desc'; // default to asc on new sort
+                }
+
+                fetchData();
+            });
         });
     </script>
     <style>
         #loadingStockOut {
             position: absolute;
-            top: 42px; /* Tinggi thead */
+            top: 42px;
+            /* Tinggi thead */
             left: 0;
             right: 0;
-            bottom: 60px; /* ruang untuk pagination */
+            bottom: 60px;
+            /* ruang untuk pagination */
             background: rgba(255, 255, 255, 0.6);
             z-index: 5;
             display: flex;

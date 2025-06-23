@@ -13,17 +13,19 @@ class StockOutController extends Controller
     {
         $query = $request->input('query');
         $type = $request->input('type');
+        $sort = $request->input('sort', 'date'); // default sort
+        $direction = $request->input('direction', 'desc');
 
         $stocks = StockOut::when($query, function ($q) use ($query) {
-                $q->where('item_name', 'like', "%{$query}%");
-            })
+            $q->where('item_name', 'like', "%{$query}%");
+        })
             ->when($type, function ($q) use ($type) {
                 $model = $type === 'alat' ? 'App\Models\AlatLab' : ($type === 'bahan' ? 'App\Models\BahanKimia' : null);
                 if ($model) {
                     $q->where('itemable_type', $model);
                 }
             })
-            ->orderByDesc('date')
+            ->orderBy($sort, $direction)
             ->paginate(10);
 
         if ($request->ajax()) {
@@ -115,17 +117,19 @@ class StockOutController extends Controller
     {
         $query = $request->input('query');
         $type = $request->input('type');
+        $sort = $request->input('sort', 'date'); // default sort
+        $direction = $request->input('direction', 'desc');
 
         $stocks = StockOut::when($query, function ($q) use ($query) {
-                $q->where('item_name', 'like', "%{$query}%");
-            })
+            $q->where('item_name', 'like', "%{$query}%");
+        })
             ->when($type, function ($q) use ($type) {
                 $model = $type === 'alat' ? 'App\Models\AlatLab' : ($type === 'bahan' ? 'App\Models\BahanKimia' : null);
                 if ($model) {
                     $q->where('itemable_type', $model);
                 }
             })
-            ->orderByDesc('date')
+            ->orderBy($sort, $direction)
             ->paginate(10);
 
         if ($request->ajax()) {

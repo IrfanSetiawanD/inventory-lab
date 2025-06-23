@@ -84,7 +84,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        let sort = 'date';      // default sort
+        let sort = 'date'; // default sort
         let direction = 'desc'; // default direction
         let timer;
 
@@ -95,7 +95,7 @@
             activeIcon.html(direction === 'asc' ? '▲' : '▼');
         }
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             function fetchData(url = "{{ route('stock_in.search') }}") {
                 const query = $('#searchInputStockIn').val();
                 let type = $('#typeFilterStockIn').val();
@@ -103,7 +103,7 @@
                 clearTimeout(timer);
 
                 if (query.length >= 2 || query.length === 0) {
-                    timer = setTimeout(function () {
+                    timer = setTimeout(function() {
                         $('#loadingStockIn').show();
 
                         $.ajax({
@@ -115,13 +115,13 @@
                                 sort: sort,
                                 direction: direction
                             },
-                            success: function (response) {
+                            success: function(response) {
                                 $('#stockInTableBody').html(response.html);
                                 $('#paginationStockIn').html(response.pagination);
                                 $('#loadingStockIn').hide();
                                 updateSortIcons();
                             },
-                            error: function () {
+                            error: function() {
                                 $('#loadingStockIn').hide();
                                 alert('Gagal memuat data.');
                             }
@@ -133,16 +133,16 @@
                 }
             }
 
-            $('#searchInputStockIn').on('keyup', function () {
+            $('#searchInputStockIn').on('keyup', function() {
                 fetchData();
             });
 
-            $('#typeFilterStockIn').on('change', function () {
+            $('#typeFilterStockIn').on('change', function() {
                 fetchData();
             });
 
             // Delegasi klik pagination agar tetap bisa bekerja setelah replace HTML
-            $(document).on('click', '.pagination a', function (e) {
+            $(document).on('click', '.pagination a', function(e) {
                 e.preventDefault();
                 let url = $(this).attr('href');
                 if (url) {
@@ -150,7 +150,7 @@
                 }
             });
 
-            $(document).on('click', '.sortable', function (e) {
+            $(document).on('click', '.sortable', function(e) {
                 e.preventDefault();
                 let clickedSort = $(this).data('sort');
 
@@ -169,10 +169,12 @@
     <style>
         #loadingStockIn {
             position: absolute;
-            top: 42px; /* Tinggi thead */
+            top: 42px;
+            /* Tinggi thead */
             left: 0;
             right: 0;
-            bottom: 60px; /* ruang untuk pagination */
+            bottom: 60px;
+            /* ruang untuk pagination */
             background: rgba(255, 255, 255, 0.6);
             z-index: 5;
             display: flex;

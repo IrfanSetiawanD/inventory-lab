@@ -24,8 +24,8 @@
         <td>{{ $stock->quantity }}</td>
         <td>{{ $stock->date }}</td>
         <td>
-            <form action="{{ route('stock-in.destroy', $stock->id) }}" method="POST" class="d-inline"
-                onsubmit="return confirm('Apakah Anda yakin ingin menghapus stok keluar ini? Aksi ini juga akan mengurangi kuantitas item di inventaris utama.')">
+            <form action="{{ route('stock-out.destroy', $stock->id) }}" method="POST" class="d-inline"
+                onsubmit="return confirm('Apakah Anda yakin ingin menghapus stok keluar ini? Aksi ini juga akan menambah kuantitas item di inventaris utama.')">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-danger btn-sm">
@@ -36,6 +36,6 @@
     </tr>
 @empty
     <tr>
-        <td colspan="6" class="text-center text-muted">Belum ada data stok masuk.</td>
+        <td colspan="6" class="text-center text-muted">Belum ada data stok keluar.</td>
     </tr>
 @endforelse

@@ -33,7 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('stock-in', StockInController::class)->middleware(['auth']);
     Route::get('/stock_in/search', [StockInController::class, 'search'])->name('stock_in.search');
     Route::resource('stock-out', StockOutController::class)->middleware(['auth']);
-    Route::get('/stock_out/search', [StockInController::class, 'search'])->name('stock_out.search');
+    Route::get('/stock_out/search', [StockOutController::class, 'search'])->name('stock_out.search');
     Route::get('/laporan', [ReportController::class, 'index'])->name('laporan')->middleware(['auth']);
     Route::get('/laporan/export-pdf', [ReportController::class, 'exportPdf'])->name('laporan.exportPdf');
 

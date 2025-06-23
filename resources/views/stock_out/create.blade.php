@@ -8,7 +8,7 @@
 
 @section('content')
     <div class="container mt-4">
-        <div class="card dashboard-card">
+        <div class="card dashboard-card"> {{-- Menggunakan card untuk tampilan yang lebih rapi --}}
             <div class="card-body">
                 <form method="POST" action="{{ route('stock-out.store') }}">
                     @csrf
@@ -36,7 +36,7 @@
                             @forelse($alat as $item)
                                 <option value="{{ $item->id }}"
                                     {{ old('item_id_alat') == $item->id ? 'selected' : '' }}>
-                                    {{ $item->name }}</option>
+                                    {{ $item->name }}</option> {{-- Pastikan atribut name adalah 'name' bukan 'nama' --}}
                             @empty
                                 <option value="" disabled>Tidak ada alat tersedia. Tambahkan alat terlebih dahulu.
                                 </option>

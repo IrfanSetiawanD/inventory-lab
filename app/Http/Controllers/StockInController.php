@@ -17,8 +17,8 @@ class StockInController extends Controller
         $direction = $request->input('direction', 'desc');
 
         $stocks = StockIn::when($query, function ($q) use ($query) {
-                $q->where('item_name', 'like', "%{$query}%");
-            })
+            $q->where('item_name', 'like', "%{$query}%");
+        })
             ->when($type, function ($q) use ($type) {
                 $model = $type === 'alat' ? 'App\Models\AlatLab' : ($type === 'bahan' ? 'App\Models\BahanKimia' : null);
                 if ($model) {
@@ -109,6 +109,7 @@ class StockInController extends Controller
         }
 
         $stockIn->delete();
+
         return redirect()->route('stock-in.index')->with('success', 'Stok Masuk successfully deleted.');
     }
 
@@ -120,8 +121,8 @@ class StockInController extends Controller
         $direction = $request->input('direction', 'desc');
 
         $stocks = StockIn::when($query, function ($q) use ($query) {
-                $q->where('item_name', 'like', "%{$query}%");
-            })
+            $q->where('item_name', 'like', "%{$query}%");
+        })
             ->when($type, function ($q) use ($type) {
                 $model = $type === 'alat' ? 'App\Models\AlatLab' : ($type === 'bahan' ? 'App\Models\BahanKimia' : null);
                 if ($model) {
@@ -140,5 +141,4 @@ class StockInController extends Controller
 
         return redirect()->route('stock-in.index');
     }
-    
 }
