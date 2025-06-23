@@ -25,7 +25,7 @@
         <div class="col-md-4">
             <select id="categoryFilter" class="form-control">
                 <option value="">-- Semua Kategori --</option>
-                @foreach($categories as $category)
+                @foreach ($categories as $category)
                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                 @endforeach
             </select>
@@ -54,12 +54,12 @@
         </table>
 
         <!-- Loading overlay di atas tbody -->
-            <div id="loading" style="display: none;">
-                <div class="text-center">
-                    <img src="{{ asset('images/loading.gif') }}" alt="Loading..." width="50">
-                    <p style="color: black;">Memuat Data...</p>
-                </div>
+        <div id="loading" style="display: none;">
+            <div class="text-center">
+                <img src="{{ asset('images/loading.gif') }}" alt="Loading..." width="50">
+                <p style="color: black;">Memuat Data...</p>
             </div>
+        </div>
 
         <!-- Pagination -->
         <div id="pagination" class="mt-3">
@@ -79,7 +79,7 @@
                 clearTimeout(timer);
 
                 if (query.length >= 2 || query.length === 0) {
-                    timer = setTimeout(function () {
+                    timer = setTimeout(function() {
                         $('#loading').show();
 
                         $.ajax({
@@ -89,7 +89,7 @@
                                 query: query,
                                 category_id: categoryId
                             },
-                            success: function (response) {
+                            success: function(response) {
                                 $('#bahanKimiaTableBody')
                                     .hide()
                                     .html(response.html)
@@ -118,7 +118,7 @@
                 fetchData();
             });
 
-            $(document).on('click', '.pagination a', function (e) {
+            $(document).on('click', '.pagination a', function(e) {
                 e.preventDefault();
                 const url = $(this).attr('href');
                 if (url) fetchData(url);
