@@ -137,4 +137,45 @@
         </div>
 
     </div>
+    <style>
+        .table-bordered td,
+        .table-bordered th {
+            border: 1px solid #547792 !important;
+        }
+
+        thead.table-dark th {
+            background-color: #1e3a8a !important;
+            color: #fff;
+            font-weight: 600;
+            text-align: center;
+            /* Default center, tapi bisa di-override oleh kelas th specific jika ada */
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9fafb;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e0f7ff;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        td {
+            vertical-align: middle !important;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .btn-sm {
+            padding: 6px 10px;
+            border-radius: 6px;
+        }
+
+        .table {
+            border-collapse: collapse;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+    </style>
 @endsection
