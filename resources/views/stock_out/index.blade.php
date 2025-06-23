@@ -176,6 +176,7 @@
             background-color: #1e3a8a !important;
             color: #fff;
             font-weight: 600;
+            text-align: center;
         }
 
         .table-striped tbody tr:nth-of-type(odd) {
